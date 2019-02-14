@@ -4,7 +4,7 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
 public class Query {
-
+    protected String unparsed;
     protected final Map<String, String> parsedInputs;
     protected final Set<String> fields;
 
@@ -15,6 +15,10 @@ public class Query {
             ret.put(k, parsedInputs.get(k));
         }
         return ret;
+    }
+
+    protected String cleanExpression(String exp) {
+        return exp.replace("!", " ");
     }
 
     protected Query(String ss) throws MalformedParametersException  {
@@ -34,11 +38,8 @@ public class Query {
                 }
             }
         }
-
-        //Final pass to clean up the expression field
-
-
-
     }
+
+
 
 }
