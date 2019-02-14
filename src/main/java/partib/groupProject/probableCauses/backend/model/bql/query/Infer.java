@@ -1,4 +1,13 @@
 package partib.groupProject.probableCauses.backend.model.bql.query;
 
-public class Infer implements Query {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Infer extends Query {
+
+    public Infer(String unparsed) {
+        super(unparsed);
+
+    }
+
 }

@@ -13,6 +13,8 @@ import partib.groupProject.probableCauses.backend.model.bql.query.EstimateReposi
 import partib.groupProject.probableCauses.backend.model.table.Table;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,19 +24,8 @@ public class QueryController {
     private final Logger log = LoggerFactory.getLogger(QueryController.class);
     private EstimateRepository estimateRepository;
 
-    @GetMapping("/estimateLogs")
-    Collection<Estimate> getEstimateLogs() {
-        return estimateRepository.findAll();
-    }
-
-    @GetMapping("/estimateLog/{id}")
-    ResponseEntity<Estimate> getEstimateLogById(@PathVariable Long id) {
-        Optional<Estimate> estimate = estimateRepository.findById(id);
-        return estimate.map(response -> ResponseEntity.ok().body(response)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @GetMapping("/estimate/{mode}/{expression}/{population}")
-    ResponseEntity<?> getEstimate(@PathVariable Long id, @PathVariable String expression, @PathVariable String mode, @PathVariable String population) {
+    @GetMapping("/estimate/{unparsed}")
+    ResponseEntity<?> getEstimate(@PathVariable Long id, @PathVariable String unparsed) {
         Optional<Table> table; // need BQL connection
         return null;
     }
