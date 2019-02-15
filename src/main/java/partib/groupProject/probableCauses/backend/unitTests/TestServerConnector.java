@@ -41,7 +41,7 @@ public class TestServerConnector{
 
 	public void testRejectNoQueries(){
 		
-		System.out.println("Testing wether rejecting empty queries fails.");
+		System.out.println("Testing whether rejecting empty queries fails.");
 		
 		/* Tests whether the class rejects the follwoing scenarios: 
 			empty list given, 
