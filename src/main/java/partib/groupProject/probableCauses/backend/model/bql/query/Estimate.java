@@ -6,10 +6,9 @@ import javax.persistence.Entity;
 import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
-@Data
-@Entity
-public class Estimate extends Query {
 
+public class Estimate extends Query {
+    private final Map<String, String> metaData;
 
     private static final ArrayList<String> modeOptions =
             new ArrayList<>(Arrays.asList(
@@ -30,6 +29,8 @@ public class Estimate extends Query {
 
 
     public Estimate(String unparsed) throws MalformedParametersException {
+        metaData = new HashMap<>();
+
         super(unparsed);
 
         //clean up expressions
@@ -51,9 +52,6 @@ public class Estimate extends Query {
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
             throw new MalformedParametersException();
         }
-
-
-
     }
 
     public List<String> getBQL() {

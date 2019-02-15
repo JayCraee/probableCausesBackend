@@ -29,6 +29,7 @@ public class Simulate extends Query {
         }
     }
 
+    @Override
     public List<String> getBQL() {
         List<String> ret = new ArrayList<>();
         String ss = "";
