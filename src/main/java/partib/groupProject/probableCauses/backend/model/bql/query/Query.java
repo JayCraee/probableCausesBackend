@@ -4,7 +4,8 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
 public class Query {
-
+    protected Map<String, String> metaData;
+    protected String unparsed;
     protected final Map<String, String> parsedInputs;
     protected final Set<String> fields;
 
@@ -16,6 +17,19 @@ public class Query {
         }
         return ret;
     }
+
+    protected String cleanExpression(String exp) {
+        return exp.replace("!", " ");
+    }
+
+    public Map<String, String> getMetaData() {
+        return null;
+    }
+
+    public List<String> getBQL() {
+        return null;
+    }
+
 
     protected Query(String ss) throws MalformedParametersException  {
         parsedInputs = new HashMap<>();
@@ -34,11 +48,8 @@ public class Query {
                 }
             }
         }
-
-        //Final pass to clean up the expression field
-
-
-
     }
+
+
 
 }
