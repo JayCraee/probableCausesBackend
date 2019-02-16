@@ -101,7 +101,7 @@ public class Infer extends Query {
 
     public static void main(String[] args) {
         Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
-        Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
+        //Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
         System.out.println(targinf.getBQL());
 
     }
