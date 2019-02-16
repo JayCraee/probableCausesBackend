@@ -35,7 +35,7 @@ public class Query {
         parsedInputs = new HashMap<>();
         fields = new HashSet<>();
 
-        for (String s : ss.split(";")) {
+        for (String s : ss.split("-")) {
             String[] kv = s.split("=");
             if (kv.length != 2) {
                 throw new MalformedParametersException();

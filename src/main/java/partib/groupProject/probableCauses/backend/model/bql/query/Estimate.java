@@ -29,9 +29,10 @@ public class Estimate extends Query {
 
 
     public Estimate(String unparsed) throws MalformedParametersException {
-        metaData = new HashMap<>();
+
 
         super(unparsed);
+        metaData = new HashMap<>();
 
         //clean up expressions
         parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
@@ -111,7 +112,7 @@ public class Estimate extends Query {
 
         Estimate[] testimate = new Estimate[10];
 
-        testimate[0] = new Estimate("MODE=FROM_VARIABLES_OF;EXPRESSION=PROBABILITY!DENSITY!OF!VALUE!val!GIVEN!literalconstraint;EXPNAME=ProbDensity;POPULATION=AFRICAN_DATA;LIMIT=100");
+        testimate[0] = new Estimate("MODE=FROM_VARIABLES_OF-EXPRESSION=PROBABILITY!DENSITY!OF!VALUE!val!GIVEN!literalconstraint-EXPNAME=ProbDensity-POPULATION=AFRICAN_DATA-LIMIT=100");
         /*
         for (Estimate est : testimate) {
             if (est != null) {
@@ -124,7 +125,7 @@ public class Estimate extends Query {
         //System.out.println(testimate[0].getParsedInputs());
         System.out.println(testimate[0].getBQL());
 
-        testimate[1] = new Estimate("MODE=BY;EXPRESSION=DEPENDENCE!PROBABILITY!OF!col1!WITH!col2;EXPNAME=Dependence_Probability;POPULATION=AFRICA_DATA");
+        testimate[1] = new Estimate("MODE=BY-EXPRESSION=DEPENDENCE!PROBABILITY!OF!col1!WITH!col2-EXPNAME=Dependence_Probability-POPULATION=AFRICA_DATA");
         //System.out.println(testimate[1].getParsedInputs());
         System.out.println(testimate[1].getBQL());
 

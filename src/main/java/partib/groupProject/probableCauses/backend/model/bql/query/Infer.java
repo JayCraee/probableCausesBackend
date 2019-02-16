@@ -8,11 +8,11 @@ import java.util.List;
 public class Infer extends Query {
     private static final ArrayList<String> compulsoryFields =
             new ArrayList<>(Arrays.asList(
-                    new String[]{"COLNAMES", "MODE", "POPULATION"}));
+                    new String[]{"MODE", "POPULATION"}));
 
     private static final ArrayList<String> optionalFields =
             new ArrayList<>(Arrays.asList(
-                    new String[]{"WITH CONFIDENCE", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
+                    new String[]{"COLNAMES", "EXPRESSION", "WITH CONFIDENCE", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
 
     private static final ArrayList<String> modeOptions =
             new ArrayList<>(Arrays.asList(
@@ -24,18 +24,45 @@ public class Infer extends Query {
         String ss = "";
 
         ss += "INFER";
+
         switch (super.parsedInputs.get("MODE")) {
             case "FROM": {
+                System.out.println("CASE FROM");
                 ss += " " + parsedInputs.get("COLNAMES");
+                if (fields.contains("WITH CONFIDENCE")) {
+                    ss += " WITH CONFIDENCE " + parsedInputs.get("WITH CONFIDENCE");
+                } else {
+                    ss += " WITH CONFIDENCE 0.7";
+                }
+                break;
             }
             case "EXPLICIT FROM": {
-
+                System.out.println("CASE EXPLICIT FROM");
+                ss += " EXPLICIT " + parsedInputs.get("EXPRESSION");
+                ss += " FROM ";
+                break;
             }
+        }
+        if (fields.contains("WHERE")) {
+
+        }
+        if (fields.contains("GROUP BY")) {
+
+        }
+        if (fields.contains("ORDER BY")) {
+            ss += " ORDER BY " + parsedInputs.get("ORDER BY");
+        }
+        if (fields.contains("LIMIT")) {
+            ss += " LIMIT " + parsedInputs.get("LIMIT");
+        } else {
+            ss += " LIMIT 50";
         }
 
 
 
-        return null;
+
+        ret.add(ss);
+        return ret;
     }
 
 
@@ -57,11 +84,24 @@ public class Infer extends Query {
                 throw new MalformedParametersException();
             }
         }
+
+        if (parsedInputs.get("MODE") == "FROM") {
+            if (!super.fields.contains("COLNAMES")) {
+                throw new MalformedParametersException();
+            }
+        }
+        if (parsedInputs.get("MODE") == "EXPLICIT FROM") {
+            if (!super.fields.contains("EXPRESSION")) {
+                throw new MalformedParametersException();
+            }
+        }
+
     }
 
 
     public static void main(String[] args) {
-        Infer targinf = new Infer("COLNAMES=col1;MODE=FROM;POPULATION=hell_data");
+        Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
+        Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
         System.out.println(targinf.getBQL());
 
     }
