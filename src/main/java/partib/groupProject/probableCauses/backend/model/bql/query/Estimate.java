@@ -41,17 +41,17 @@ public class Estimate extends Query {
         //sanity check on inputs
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Missing compulsory field <"+k+">");
             }
         }
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Query field <"+k+"> not present");
             }
         }
         parsedInputs.put("MODE", parsedInputs.get("MODE").replace("_", " "));
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
-            throw new MalformedParametersException();
+            throw new MalformedParametersException("Mode not supplied");
         }
     }
 
