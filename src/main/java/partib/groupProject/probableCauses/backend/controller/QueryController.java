@@ -44,4 +44,9 @@ public class QueryController {
         Select query = new Select(unparsed);
         return ServerConnector.queryCaller("foo.bdb", query.getBQL());
     }
+
+    @GetMapping("/selectTest/{parsed}")
+    String getSelectTest(@PathVariable String parsed) throws InvalidCallException {
+        return ServerConnector.fooQueryCaller("SELECT * FROM sys.tables");
+    }
 }
