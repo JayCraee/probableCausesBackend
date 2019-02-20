@@ -7,7 +7,7 @@ import partib.groupProject.probableCauses.backend.model.bql.query.Estimate;
 
 import java.lang.reflect.MalformedParametersException;
 
-public class EstimateTest {
+public class estimateTest {
     // Converts query to 'standard form' with whitespace cut down to just a single space between
     // each two tokens, and all in upper case. This is used to test equality of queries.
     private static String standardiseQuery(String a){

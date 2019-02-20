@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        EstimateTest.class,
+        estimateTest.class,
         SimulateTest.class}) // TODO add: findOutliersTest, inferTest, repairTest, selectTest
 
 public class AllQueryTests {
