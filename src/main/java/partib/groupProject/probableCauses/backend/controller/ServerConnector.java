@@ -2,14 +2,13 @@ package partib.groupProject.probableCauses.backend.controller;
 
 /**
 *   ServerConnector.java
-*   @author dks28
+*   @author dks28 jhl69 (edited)
 *   
 *   Provides a Java API to connect to the data base server with queries.
 *   The current state is bad Java practice; shouldn't be a collection of static methods, 
 *   rather should provide constructors for ServerConnector objects that then take information 
 *   on server address and port, such that they don't need to be hard coded.
 */
-
 
 import java.io.*;
 import java.io.OutputStream;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 
 public class ServerConnector {
 
-	private static String server_ip = "dev-1b-oscar.cl.cam.ac.uk"; //TODO try not to push with the server_ip there
+	private static String server_ip = ""; //TODO try not to push with the server_ip there dev-1b-oscar.cl.cam.ac.uk
 
 	public static boolean isStringNullOrWhiteSpace(String value) {
 		if (value == null) {
@@ -102,8 +101,16 @@ public class ServerConnector {
 		return response; 
 	}
 
-	public static String queryCaller(List<String> queries) throws InvalidCallException{ 
+	public static String queryCaller(List<String> queries) throws InvalidCallException {
 		throw new InvalidCallException("This method is deprecated. " + 
 			"Please provide a data base file to operate on and call queryCaller(String db, List<String> queries)");
+	}
+
+	public static String fooQueryCaller(String query) throws InvalidCallException {
+		return singleQueryCaller("foo.bdb", query);
+	}
+
+	public static String fooQueryCaller(List<String> queries) throws InvalidCallException {
+		return queryCaller("foo.bdb", queries);
 	}
 }
