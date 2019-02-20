@@ -20,12 +20,12 @@ public class Simulate extends Query {
         //sanity check on inputs
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
     }
@@ -54,15 +54,9 @@ public class Simulate extends Query {
         } else {
             ss += " LIMIT 50";
         }
-
-
-
-
-
         ret.add(ss);
         return ret;
     }
-
 
     public static void main(String[] args) {
         Simulate targsim = new Simulate("COLNAMES=col1,col2-POPULATION=AFRICA_ACCIDENT-LIMIT1=4000-LIMIT2=40-GIVEN=cont");

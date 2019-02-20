@@ -44,10 +44,10 @@ public class Infer extends Query {
             }
         }
         if (fields.contains("WHERE")) {
-
+            // TODO
         }
         if (fields.contains("GROUP BY")) {
-
+            // TODO
         }
         if (fields.contains("ORDER BY")) {
             ss += " ORDER BY " + parsedInputs.get("ORDER BY");
@@ -57,9 +57,6 @@ public class Infer extends Query {
         } else {
             ss += " LIMIT 50";
         }
-
-
-
 
         ret.add(ss);
         return ret;
@@ -76,35 +73,30 @@ public class Infer extends Query {
         //sanity check on inputs
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
 
         if (parsedInputs.get("MODE") == "FROM") {
             if (!super.fields.contains("COLNAMES")) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: COLNAMES field required when MODE=FROM");
             }
         }
         if (parsedInputs.get("MODE") == "EXPLICIT FROM") {
             if (!super.fields.contains("EXPRESSION")) {
-                throw new MalformedParametersException();
+                throw new MalformedParametersException("Error: EXPRESSION field required when MODE=EXPLICIT_FROM");
             }
         }
-
     }
-
 
     public static void main(String[] args) {
         Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
         //Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
         System.out.println(targinf.getBQL());
-
     }
-
-
 }
