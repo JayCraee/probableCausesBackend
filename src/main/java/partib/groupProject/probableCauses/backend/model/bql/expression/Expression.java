@@ -10,9 +10,6 @@ public class Expression {
     protected final Map<String, String> parsedInputs;
     protected final Set<String> fields;
 
-    
-
-
     private Map<String, String> getParsedInputs() {
         Map<String, String> ret = new HashMap<>();
         for (String k : fields) {
@@ -20,7 +17,6 @@ public class Expression {
         }
         return ret;
     }
-
 
     protected Expression(String ss) throws MalformedParametersException {
         parsedInputs = new HashMap<>();
@@ -39,20 +35,9 @@ public class Expression {
                 }
             }
         }
-
-
-
     }
 
     public static void main(String[] args) {
         Expression testexp = new Expression("COLUMN=targcol-GIVEN=targcols");
-
-
-
-
-
-
-
     }
-
 }
