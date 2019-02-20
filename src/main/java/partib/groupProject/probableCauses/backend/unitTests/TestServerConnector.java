@@ -119,14 +119,15 @@ public class TestServerConnector{
 	public void testConnection(){
 		
 		System.out.println("Testing that a connection works.");
-
+		String res = "";
+		String expected = "[[{\"y\": 2, \"x\": 1, \"name\": \"A\"}, {\"y\": 4, \"x\": 3, \"name\": \"B\"}]]";
 		List<String> queries = Arrays.asList("SQL CREATE TABLE t (name TEXT, x INT, y INT);", "	SQL INSERT INTO t VALUES(\"A\", 1, 2);", "SQL INSERT INTO t VALUES(\"B\", 3, 4);", "SELECT * FROM t;", "DROP TABLE t;");
 		try {
-			ServerConnector.queryCaller("foo.bdb", queries);
+			res = ServerConnector.queryCaller("foo.bdb", queries);
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false : "Caught Exception in method execution.";
 		}
-
+		assert res.equals(expected) : "Got unexpected result from server!";
 	}
 }
