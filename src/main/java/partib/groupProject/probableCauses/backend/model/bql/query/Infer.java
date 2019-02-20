@@ -57,11 +57,9 @@ public class Infer extends Query {
         } else {
             ss += " LIMIT 50";
         }
-
         ret.add(ss);
         return ret;
     }
-
 
     public Infer(String unparsed) {
         super(unparsed);

@@ -9,39 +9,15 @@ public class Find_Outliers extends Query {
     public List<String> getBQL() {
         List<String> ret = new ArrayList<>();
 
-
-
         return ret;
     }
 
-
-
     public Find_Outliers(String unparsed) {
         super(unparsed);
-
-        
-
-
     }
-
-
-
-
-
 
     public static void main(String[] args) {
         Find_Outliers targfo = new Find_Outliers("FIELD=PLACEHOLDER");
         System.out.println(targfo.getBQL());
-
-
-
-
-
-
-
-
     }
-
-
-
 }

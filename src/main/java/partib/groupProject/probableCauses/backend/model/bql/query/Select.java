@@ -13,8 +13,6 @@ public class Select extends Query {
                     new String[]{"MODE", "TABLE", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
 
     public Select(String unparsed) {
-
         super(unparsed);
     }
-
 }
