@@ -9,7 +9,6 @@ public class Query {
     protected final Map<String, String> parsedInputs;
     protected final Set<String> fields;
 
-
     public Map<String, String> getParsedInputs() {
         Map<String, String> ret = new HashMap<>();
         for (String k : fields) {
@@ -30,7 +29,6 @@ public class Query {
         return null;
     }
 
-
     protected Query(String ss) throws MalformedParametersException  {
         parsedInputs = new HashMap<>();
         fields = new HashSet<>();
@@ -38,18 +36,19 @@ public class Query {
         for (String s : ss.split("-")) {
             String[] kv = s.split("=");
             if (kv.length != 2) {
-                throw new MalformedParametersException();
+                if (kv.length == 1){
+                    throw new MalformedParametersException("Error: No value found for field <"+kv[0]+">");
+                } else {
+                    throw new MalformedParametersException("Error: Each field should be separated by '-' and should contain exactly 1 '='");
+                }
             } else {
                 if (!fields.contains(kv[0])) {
                     parsedInputs.put(kv[0].replace("_", " "), kv[1]);
                     fields.add(kv[0].replace("_", " "));
                 } else {
-                    throw new MalformedParametersException();
+                    throw new MalformedParametersException("Error: Repeated field <"+kv[0]+">");
                 }
             }
         }
     }
-
-
-
 }
