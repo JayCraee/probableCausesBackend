@@ -21,7 +21,7 @@ public class InferTest{
 
 
 	public void singleTest(String input, String expectedBQLOutput, boolean shouldFail) {
-		Estimate e = new Estimate(input);
+		Infer e = new Infer(input);
 		String BQLOutput = e.getBQL().get(0); //.get(0) because getBQL() currently returns a list of 1 element
 		
 		if (!shouldFail){
