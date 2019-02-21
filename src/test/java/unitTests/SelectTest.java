@@ -9,7 +9,7 @@ import java.lang.reflect.MalformedParametersException;
 
 
 
-public class InferTest{
+public class SelectTest {
 	private static String standardiseQuery(String a){
 		String standardWhitespace = a.trim().replaceAll("\\s+", " ");
 		return standardWhitespace.toUpperCase();
