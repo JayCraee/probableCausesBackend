@@ -114,7 +114,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM pop WHERE exp2 GROUP BY exp3) ORDER BY exp4LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -137,7 +137,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -159,7 +159,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE VARIABLES OF pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM PAIRWISE VARIABLES OF pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -178,21 +178,21 @@ public class EstimateTest {
     public void testFROM_PAIRWISE() {
         String input =
                 "MODE=FROM_PAIRWISE" +
-                        "-EXPRESSION=exp" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop";
+                "-EXPRESSION=exp" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop";
         String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE pop AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM_PAIRWISE" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-WHERE=exp2" +
-                        "-ORDER_BY=exp3" +
-                        "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
+                "-EXPRESSION=exp1" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-WHERE=exp2" +
+                "-ORDER_BY=exp3" +
+                "-LIMIT=1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM PAIRWISE pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -200,10 +200,10 @@ public class EstimateTest {
     public void testFROM_PAIRWISEWithInvalidOptionalsError() {
         String input =
                 "MODE=FROM_PAIRWISE" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-GROUP_BY=exp2";
+                "-EXPRESSION=exp1" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-GROUP_BY=exp2";
         singleTest(input, null, true);
     }
 
@@ -257,10 +257,41 @@ public class EstimateTest {
     public void testInvalidFieldNameError() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp" +
+                "-EXPRESSION=exp1" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-fake_news=exp2";
         singleTest(input, null, true);
+    }
+
+    @Test
+    public void testWithRealisticExpression() {
+        String input =
+                "MODE=BY" +
+                "-EXPRESSION=x,!y" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop";
+        String expectedOutput = "SELECT * FROM (ESTIMATE x, y FROM pop AS col) ORDER BY col LIMIT 50";
+        singleTest(input, expectedOutput);
+
+        input =
+                "MODE=FROM" +
+                "-EXPRESSION=x,!y" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop";
+        expectedOutput = "SELECT * BY (ESTIMATE x, y FROM pop AS col) ORDER BY col LIMIT 50";
+        singleTest(input, expectedOutput);
+    }
+
+    @Test
+    public void testWithEqualityInExpression() {
+        String input =
+                "MODE=FROM" +
+                "-EXPRESSION=exp" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-WHERE=x=y";
+        String expectedOutput = "SELECT * FROM (ESTIMATE x, y FROM pop WHERE x=y AS col) ORDER BY col LIMIT 50";
+        singleTest(input, expectedOutput);
     }
 }
