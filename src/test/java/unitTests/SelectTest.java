@@ -3,7 +3,7 @@ package unitTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
-import partib.groupProject.probableCauses.backend.model.bql.query.Infer;
+import partib.groupProject.probableCauses.backend.model.bql.query.Select;
 
 import java.lang.reflect.MalformedParametersException;
 
@@ -43,85 +43,79 @@ public class InferTest{
 	@Test (expected = MalformedParametersException.class)
 	public void testDefaultNoColNames() {
 	
-		String in = "MODE=FROM-POPULATION=pop";
+		String in = "TABLE=pop";
 		singleTest(in, null, true);
 	
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testExplicitNoColNames() {
+	public void testNoTable() {
 	//TODO: This will currently definitely fail. However, otherwise the BQL generator allows INFER EXPLICITs without column names which is a terrible idea.
 	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop"; 
+		String in = "COLNAMES=col"; 
 		singleTest(in, null, true);
-	
-
-	}
-	@Test (expected = MalformedParametersException.class)
-	public void testDefaultNoPopulation() {
-	
-		String in = "MODE=FROM-COLNAMES=col";
-		singleTest(in, null, true);
-	
-	}
-
-	@Test (expected = MalformedParametersException.class)
-	public void testExplicitNoPopulation() {
-
-		String in = "MODE=EXPLICIT_FROM-COLNAMES=col"; 
-		singleTest(in, null, true);
-	
 	}
 
 	@Test
-	public void testDefaultBase() {
+	public void testBase() {
 	
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.7";
+		String in = "COLNAMES=col-TABLE=tab";
+		String exp = "SELECT COL FROM TAB";
+		
+		singleTest(in, exp);
+	
+	}
+	
+	@Test
+	public void testWhere() {
+	
+		String in = "TABLE=tab-COLNAMES=col-WHERE=col<5";
+		String exp = "SELECT COL FROM TAB WHERE COL<5";
+		
+		singleTest(in, exp);
+	}
+
+	@Test
+	public void testGroupBy() {
+		String in = "COLNAMES=col1,col2-TABLE=tab-GROUP_BY=col1";
+		String exp = "SELECT COL1,COL2 FROM TAB GROUP BY COL1";
+		
+		singleTest(in, exp);
+	}
+
+	@Test
+	public void testOrderBy() {
+		String in = "COLNAMES=col1,col2-TABLE=tab-ORDER_BY=col1";
+		String exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1";
+		
+		singleTest(in, exp);
+
+		in = "COLNAMES=col1,col2-TABLE=tab-ORDER_BY=col1!DESC";
+		exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1 DESC";
+		
+		singleTest(in, exp);
+	}
+
+	@Test
+	public void testLimit() {
+	
+		String in = "COLNAMES=col-TABLE=tab-LIMIT=50";
+		String exp = "SELECT COL FROM TAB LIMIT 50";
 		
 		singleTest(in, exp);
 	
 	}
 
-	
 	@Test
-	public void testExplicitBase() {
+	public void testAll() {
 	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop-EXPRESSION=col";
-		String exp = "INFER EXPLICIT COL FROM POP";
+		String in = "COLNAMES=col1,col2-TABLE=tab-WHERE=col1<5-GROUP_BY=col1-ORDER_BY=col1-LIMIT=50";
+		String exp = "SELECT COL1,COL2 FROM TAB WHERE COL1<5 GROUP BY COL1 ORDER BY COL1 LIMIT 50";
 		
 		singleTest(in, exp);
+	
 	}
-
 	
-	@Test
-	public void testDefaultConf() {
-	
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col-WITH_CONFIDENCE=0.8";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.8";
-		
-		singleTest(in, exp);
-	}
-
-	
-	@Test
-	public void testExplicitConf() {
-	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop-EXPRESSION=col1,col2!PREDICT!col2!AS!two!CONFIDENCE!conf2";
-		String exp = "INFER EXPLICIT COL1,COL2 PREDICT COL2 AS TWO CONFIDENCE CONF2 FROM POP WITH CONFIDENCE 0.8";
-		
-		singleTest(in, exp);
-	}
-
-	
-	@Test
-	public void testDefaultConstraint() {
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col1,col2-WHERE=col3>5-GROUP_BY=col4-ORDER_BY=col6!ASC";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.7 WHERE COL3>5 GROUP BY COL4 ORDER BY COL6 ASC";
-		
-		singleTest(in, exp);
-	}
-
 	@Test (expected = MalformedParametersException.class)
 	public void testInvalidField() {
 		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col-ANFIELD=bad";
