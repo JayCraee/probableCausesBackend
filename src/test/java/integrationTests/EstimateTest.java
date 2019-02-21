@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EstimateTest {
-    private String start = ":8080/bql/query/estimate";
+    private String start = "http://localhost:8080/bql/query/estimate";
 
     @Test
     public void testBY() throws BQLException, InvalidReturnFormatException{
