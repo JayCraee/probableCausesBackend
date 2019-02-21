@@ -7,18 +7,21 @@ import partib.groupProject.probableCauses.backend.model.bql.query.Estimate;
 
 import java.lang.reflect.MalformedParametersException;
 
-public class EstimateTest {
+public class estimateTest {
     // Converts query to 'standard form' with whitespace cut down to just a single space between
     // each two tokens, and all in upper case. This is used to test equality of queries.
     private static String standardiseQuery(String a){
         String standardWhitespace = a.trim().replaceAll("\\s+", " ");
-        return standardWhitespace.toUpperCase();
+        String removeWhitespaceInBrackets = standardWhitespace
+                .replaceAll("\\(\\s+", "(")
+                .replaceAll("\\s+\\)", ")");
+        return removeWhitespaceInBrackets.toUpperCase();
     }
 
     // Given an input and an expected output, tests whether Estimate produces the correct BQL
-    public void singleTest(String input, String expectedBQLOutput, boolean shouldFail) {
+    public static void singleTest(String input, String expectedBQLOutput, boolean shouldFail) {
         Estimate e = new Estimate(input);
-        String BQLOutput = e.getBQL().get(0); //.get(0) because getBQL() currently returns a list of 1 element
+        String BQLOutput = e.getBQL().get(0); //.get(0) because getBQL() returns a list of 1 element
 
         if (!shouldFail){
             assertEquals(
@@ -46,7 +49,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM ( ESTIMATE exp BY pop) LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp BY pop) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -55,7 +58,7 @@ public class EstimateTest {
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "LIMIT=1000";
-        expectedOutput = "SELECT * FROM ( ESTIMATE exp BY pop) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp BY pop) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -99,7 +102,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM pop AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -111,7 +114,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM ( ESTIMATE exp1 FROM pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -122,7 +125,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -134,7 +137,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3 ORDER BY exp4) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -145,7 +148,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM PAIRWISE VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -156,7 +159,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM PAIRWISE VARIABLES OF pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE VARIABLES OF pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -178,7 +181,7 @@ public class EstimateTest {
                         "-EXPRESSION=exp" +
                         "-EXPNAME=col" +
                         "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM PAIRWISE pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE pop AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -189,7 +192,7 @@ public class EstimateTest {
                         "-WHERE=exp2" +
                         "-ORDER_BY=exp3" +
                         "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM ( ESTIMATE exp FROM PAIRWISE pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE pop WHERE exp2 ORDER BY exp3) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
