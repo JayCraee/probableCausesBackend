@@ -76,7 +76,7 @@ public class Estimate extends Query {
 
                 ss += ")";
 
-                if (super.fields.contains("ORDER_BY")) {
+                if (super.fields.contains("ORDER BY")) {
                     ss += " ORDER BY " + super.parsedInputs.get("ORDER BY");
                 } else {
                     ss += " ORDER BY " + super.parsedInputs.get("EXPNAME");
@@ -91,4 +91,24 @@ public class Estimate extends Query {
         ret.add(ss);
         return ret;
     }
+
+
+    public static void main(String[] args) {
+        String input =
+            "MODE=FROM_VARIABLES_OF" +
+            "-EXPRESSION=exp1" +
+            "-EXPNAME=col" +
+            "-POPULATION=pop" +
+            "-WHERE=exp2" +
+            "-GROUP_BY=exp3" +
+            "-ORDER_BY=exp4" +
+            "-LIMIT=1000";
+
+
+        Estimate targest = new Estimate(input);
+        System.out.println(targest.getBQL());
+        System.out.println(targest.getParsedInputs());
+    }
+
+
 }
