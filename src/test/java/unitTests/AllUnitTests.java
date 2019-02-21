@@ -11,5 +11,5 @@ import org.junit.runners.Suite.SuiteClasses;
 		InferTest.class,
 		SelectTest.class}) // TODO add: FindOutliersTest, RepairTest
 
-public class AllQueryTests {
+public class AllUnitTests {
 }
