@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class ServerConnector {
 
-	private static String server_ip = ""; //TODO try not to push with the server_ip there dev-1b-oscar.cl.cam.ac.uk
+	private static String server_ip = "dev-1b-oscar.cl.cam.ac.uk"; //TODO try not to push with the server_ip there dev-1b-oscar.cl.cam.ac.uk
 
 	public static boolean isStringNullOrWhiteSpace(String value) {
 		if (value == null) {
