@@ -34,7 +34,7 @@ public class Query {
         fields = new HashSet<>();
 
         for (String s : ss.split("-")) {
-            String[] kv = s.split(":=");
+            String[] kv = s.split("=");
             if (kv.length != 2) {
                 if (kv.length == 1){
                     throw new MalformedParametersException("Error: No value found for field <"+kv[0]+">");
