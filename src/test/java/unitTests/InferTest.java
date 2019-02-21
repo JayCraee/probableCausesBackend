@@ -16,21 +16,28 @@ public class InferTest{
 	}
 	
 	public void singleTest(String input, String expectedBQLOutput) {
-		Infer i = new Infer(input);
-		String BQLOutput = i.getBQL().get(0); //.get(0) because getBQL() currently returns a list of 1 element
+		singleTest(input, expectedBQLOutput, false);
+	}
+
+
+	public void singleTest(String input, String expectedBQLOutput, boolean shouldFail) {
+		Estimate e = new Estimate(input);
+		String BQLOutput = e.getBQL().get(0); //.get(0) because getBQL() currently returns a list of 1 element
 		
-		assertEquals(
-			standardiseQuery(expectedBQLOutput),
-			standardiseQuery(BQLOutput),
-			"BQL incorrectly generated: "
-		);
+		if (!shouldFail){
+			assertEquals(
+				standardiseQuery(expectedBQLOutput),
+				standardiseQuery(BQLOutput),
+				"BQL incorrectly generated: "
+			);
+		}
 	}
 	
 	@Test (expected = MalformedParametersException.class)
 	public void testEmptyInput() {
 		String input = "";
 		String expectedOutput = "";
-		singleTest(input, expectedOutput);
+		singleTest(input, expectedOutput, true);
 	}
 
 	
@@ -40,7 +47,7 @@ public class InferTest{
 		String in = "MODE=FROM-POPULATION=pop";
 		String exp = "INFER FROM POP WITH CONFIDENCE 0.7";
 		
-		singleTest(in, exp);
+		singleTest(in, exp, true);
 	
 	}
 
@@ -94,6 +101,13 @@ public class InferTest{
 		singleTest(in, exp);
 	}
 
+	@Test (expected = MalformedParametersException.class)
+	public void testInvalidField() {
+		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col-ANFIELD=bad";
+		String exp = "INFER COL FROM POP WITH CONFIDENCE 
+		
+		singleTest(in, exp, true);
+	}
 
 /* -- From estimateTest	
 	@Test
