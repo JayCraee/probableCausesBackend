@@ -284,14 +284,14 @@ public class EstimateTest {
     }
 
     @Test
-    public void testWithEqualityInExpression() {
+    public void testWithEqualityInCondition() {
         String input =
                 "MODE=FROM" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=x=y";
-        String expectedOutput = "SELECT * FROM (ESTIMATE x, y FROM pop WHERE x=y AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM pop WHERE x=y AS col) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
     }
 }
