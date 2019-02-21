@@ -19,7 +19,7 @@ public class Estimate extends Query {
             new ArrayList<>(Arrays.asList(
                     new String[]{"WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
 
-    private static final ArrayList<String> innerFields=
+    private static final ArrayList<String> innerFields =
             new ArrayList<>(Arrays.asList(
                     new String[]{"WHERE", "GROUP BY"}));
 

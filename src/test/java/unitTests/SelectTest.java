@@ -3,6 +3,7 @@ package unitTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
+import partib.groupProject.probableCauses.backend.model.bql.query.Estimate;
 import partib.groupProject.probableCauses.backend.model.bql.query.Select;
 
 import java.lang.reflect.MalformedParametersException;
