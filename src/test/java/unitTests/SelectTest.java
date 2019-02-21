@@ -9,7 +9,7 @@ import java.lang.reflect.MalformedParametersException;
 
 
 
-public class InferTest{
+public class SelectTest{
 	private static String standardiseQuery(String a){
 		String standardWhitespace = a.trim().replaceAll("\\s+", " ");
 		return standardWhitespace.toUpperCase();
@@ -21,7 +21,7 @@ public class InferTest{
 
 
 	public void singleTest(String input, String expectedBQLOutput, boolean shouldFail) {
-		Estimate e = new Estimate(input);
+		Select e = new Select(input);
 		String BQLOutput = e.getBQL().get(0); //.get(0) because getBQL() currently returns a list of 1 element
 		
 		if (!shouldFail){
