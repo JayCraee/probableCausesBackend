@@ -2,25 +2,25 @@ package integrationTests;
 
 import java.util.*;
 import org.json.*;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-
+@RunWith(SpringRunner.class)
 public class IntegrationTestFramework {
-    private static String doRequest(String uri)
-    {
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
-
-        return result;
+    private static String doRequest(String uri, MockMvc mockMvc) throws Exception {
+        return mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
     }
 
     // Given an input and an expected output
-    public static void singleTest(String input, List<String> expectedColumns, int expectedRows) throws BQLException, InvalidReturnFormatException{
+    public static void singleTest(String input, List<String> expectedColumns, int expectedRows, MockMvc mockMvc) throws BQLException, InvalidReturnFormatException, Exception {
         JSONArray tables;
         try {
-            tables = new JSONArray(doRequest(input));
+            tables = new JSONArray(doRequest(input, mockMvc));
         } catch (JSONException e){
             throw new BQLException(input); // This is the case that input is an error message rather than JSON (hopefully)
         }

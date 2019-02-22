@@ -1,16 +1,30 @@
 package integrationTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import partib.groupProject.probableCauses.backend.ProbableCausesApplication;
+import partib.groupProject.probableCauses.backend.controller.QueryController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(QueryController.class)
+@ContextConfiguration(classes = ProbableCausesApplication.class)
 public class InferTest {
-	private String start = "http://localhost:8080/bql/query/infer/";
+	@Autowired
+	private MockMvc mockMvc;
+
+	private String start = "/bql/query/infer/";
 
 	@Test
-	public void testDefault() throws BQLException, InvalidReturnFormatException{
+	public void testDefault() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=FROM" +
 				"-COLNAMES=col1" +
@@ -18,11 +32,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicit() throws BQLException, InvalidReturnFormatException{
+	public void testExplicit() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
 				"-EXPRESSION=col1" +
@@ -30,11 +44,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultLimit() throws BQLException, InvalidReturnFormatException{
+	public void testDefaultLimit() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=FROM" +
 				"-COLNAMES=col1" +
@@ -43,11 +57,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 25;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitLimit() throws BQLException, InvalidReturnFormatException{
+	public void testExplicitLimit() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
 				"-EXPRESSION=col1" +
@@ -56,11 +70,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 25;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultOrderBy() throws BQLException, InvalidReturnFormatException{
+	public void testDefaultOrderBy() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=FROM" +
 				"-COLNAMES=col1" +
@@ -69,11 +83,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitOrderBy() throws BQLException, InvalidReturnFormatException{
+	public void testExplicitOrderBy() throws BQLException, InvalidReturnFormatException, Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
 				"-EXPRESSION=col1" +
@@ -82,11 +96,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultConfidence() throws BQLException, InvalidReturnFormatException{
+	public void testDefaultConfidence() throws BQLException, InvalidReturnFormatException, Exception {
 		// N.B. Confidence works differently in default mode and explicit mode. i
 		// This infers missing values iff this can be done with confidence >= given value.
 		String uri = start +
@@ -98,11 +112,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 0;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitConfidence() throws BQLException, InvalidReturnFormatException{
+	public void testExplicitConfidence() throws BQLException, InvalidReturnFormatException, Exception {
 		// N.B. Confidence works differently in default mode and explicit mode. i
 		// This just infers the values and writes the confidence into another column.
 		String uri = start +
@@ -114,11 +128,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("c, conf");
 		int expectedNumberOfRows = 0;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultConstraint() throws BQLException, InvalidReturnFormatException{
+	public void testDefaultConstraint() throws BQLException, InvalidReturnFormatException, Exception{
 		String uri = start +
 				"MODE=FROM" +
 				"-COLNAMES=col1" +
@@ -127,11 +141,11 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitConstraint() throws BQLException, InvalidReturnFormatException{
+	public void testExplicitConstraint() throws BQLException, InvalidReturnFormatException, Exception{
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
 				"-EXPRESSION=col1" +
@@ -140,7 +154,7 @@ public class InferTest {
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
-		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows);
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 
