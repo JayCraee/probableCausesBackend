@@ -28,7 +28,6 @@ import partib.groupProject.probableCauses.backend.controller.QueryController;
 
 // Inspired by: https://spring.io/guides/gs/testing-web/
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(QueryController.class)
 @ContextConfiguration(classes = ProbableCausesApplication.class)
@@ -43,11 +42,11 @@ public class EstimateTest {
         String uri =
                 start +
                 "/MODE=BY" +
-                "-EXPRESSION=col1" +
-                "-EXPNAME=column1" +
-                "-POPULATION=pop";
-        List<String> expectedColumnNames = Arrays.asList("col1");
-        int expectedNumberOfRows = 50;
+                "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
+                "-EXPNAME=correlation" +
+                "-POPULATION=CRIMEDATA";
+        List<String> expectedColumnNames = Arrays.asList("correlation");
+        int expectedNumberOfRows = 1;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
