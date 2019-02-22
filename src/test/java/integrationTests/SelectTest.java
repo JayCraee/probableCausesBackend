@@ -6,8 +6,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.lang.reflect.MalformedParametersException;
+
 public class SelectTest {
 	private String start = "http://localhost:8080/bql/query/select/";
+
+	@Test (expected = MalformedParametersException.class)
+	public void testEmptyRejected() throws BQLException, InvalidReturnFormatException{
+		String uri = start;
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoTable() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"COLUMNS=col1";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoColumns() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"TABLE=tab";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testBadField() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"COLUMNS=col1" +
+				"-TABLE=tab" + 
+				"-ANFIELD=bad";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
 
 	@Test
 	public void testBase() throws BQLException, InvalidReturnFormatException{

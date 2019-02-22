@@ -6,8 +6,46 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.lang.reflect.MalformedParametersException;
+
 public class InferTest {
 	private String start = "http://localhost:8080/bql/query/infer/";
+
+	@Test (expected = MalformedParametersException.class)
+	public void testEmptyRejected() throws BQLException, InvalidReturnFormatException{
+		String uri = start;
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoColNames() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"MODE=FROM" +
+				"-POPULATION=pop";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoPopulation() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"MODE=FROM" +
+				"-COLNAMES=col1";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testBadField() throws BQLException, InvalidReturnFormatException{
+		String uri = start +
+				"COLNAMES=col1" +
+				"-POPULATION=pop" + 
+				"-ANFIELD=bad";
+
+		IntegrationTestFramework.singleTest(uri, null, 0);
+	}
+
 
 	@Test
 	public void testDefault() throws BQLException, InvalidReturnFormatException{
