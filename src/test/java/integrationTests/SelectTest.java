@@ -14,42 +14,79 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.lang.reflect.MalformedParametersException;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(QueryController.class)
 @ContextConfiguration(classes = ProbableCausesApplication.class)
+
 public class SelectTest {
 	@Autowired
 	private MockMvc mockMvc;
 
 	private String start = "/bql/query/select/";
 
-	@Test
-	public void testBase() throws BQLException, InvalidReturnFormatException, Exception{
+	@Test (expected = MalformedParametersException.class)
+	public void testEmptyRejected() throws Exception{
+		String uri = start;
+
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoTable() throws Exception{
 		String uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+				"COLUMNS=ID";
+
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testNoColumns() throws Exception{
+		String uri = start +
+				"TABLE=CRIMEDATA";
+
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+	}
+
+	@Test (expected = MalformedParametersException.class)
+	public void testBadField() throws Exception{
+		String uri = start +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" + 
+				"-ANFIELD=bad";
+
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+	}
+
+
+	@Test
+	public void testBase() throws Exception{
+		String uri = start +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA";
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testConstraint() throws BQLException, InvalidReturnFormatException, Exception{
+	public void testConstraint() throws Exception{
 		String uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop" +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" +
 				"-WHERE=TRUE";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 		
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 
 		uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop" +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" +
 				"-WHERE=FALSE";
-		expectedColumnNames = Arrays.asList("col1");
+		expectedColumnNames = Arrays.asList("ID");
 		expectedNumberOfRows = 0;
 		
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
