@@ -27,44 +27,44 @@ public class SelectTest {
 	private String start = "/bql/query/select/";
 
 	@Test (expected = MalformedParametersException.class)
-	public void testEmptyRejected() throws BQLException, InvalidReturnFormatException{
+	public void testEmptyRejected() throws Exception{
 		String uri = start;
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoTable() throws BQLException, InvalidReturnFormatException{
+	public void testNoTable() throws Exception{
 		String uri = start +
-				"COLUMNS=col1";
+				"COLUMNS=ID";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoColumns() throws BQLException, InvalidReturnFormatException{
+	public void testNoColumns() throws Exception{
 		String uri = start +
-				"TABLE=tab";
+				"TABLE=CRIMEDATA";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testBadField() throws BQLException, InvalidReturnFormatException{
+	public void testBadField() throws Exception{
 		String uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=tab" + 
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" + 
 				"-ANFIELD=bad";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 
 	@Test
-	public void testBase() throws BQLException, InvalidReturnFormatException, Exception{
+	public void testBase() throws Exception{
 		String uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop";
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA";
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
 
@@ -72,10 +72,10 @@ public class SelectTest {
 	}
 
 	@Test
-	public void testConstraint() throws BQLException, InvalidReturnFormatException, Exception{
+	public void testConstraint() throws Exception{
 		String uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop" +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" +
 				"-WHERE=TRUE";
 		List<String> expectedColumnNames = Arrays.asList("col1");
 		int expectedNumberOfRows = 50;
@@ -83,8 +83,8 @@ public class SelectTest {
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 
 		uri = start +
-				"COLUMNS=col1" +
-				"-TABLE=pop" +
+				"COLUMNS=ID" +
+				"-TABLE=CRIMEDATA" +
 				"-WHERE=FALSE";
 		expectedColumnNames = Arrays.asList("col1");
 		expectedNumberOfRows = 0;

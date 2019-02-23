@@ -27,170 +27,170 @@ public class InferTest {
 	private String start = "/bql/query/infer/";
 
 	@Test (expected = MalformedParametersException.class)
-	public void testEmptyRejected() throws BQLException, InvalidReturnFormatException{
+	public void testEmptyRejected() throws Exception{
 		String uri = start;
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoColNames() throws BQLException, InvalidReturnFormatException{
+	public void testNoColNames() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
-				"-POPULATION=pop";
+				"-POPULATION=CRIMEDATA";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoPopulation() throws BQLException, InvalidReturnFormatException{
+	public void testNoPopulation() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1";
+				"-COLNAMES=ID";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testBadField() throws BQLException, InvalidReturnFormatException{
+	public void testBadField() throws Exception{
 		String uri = start +
-				"COLNAMES=col1" +
-				"-POPULATION=pop" + 
+				"COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA" + 
 				"-ANFIELD=bad";
 
-		IntegrationTestFramework.singleTest(uri, null, 0);
+		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
 
 
 	@Test
-	public void testDefault() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testDefault() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1" +
-				"-POPULATION=pop";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+				"-COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA";
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicit() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testExplicit() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
-				"-EXPRESSION=col1" +
-				"-POPULATION=pop";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+				"-EXPRESSION=ID" +
+				"-POPULATION=CRIMEDATA";
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultLimit() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testDefaultLimit() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1" +
-				"-POPULATION=pop" +
+				"-COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA" +
 				"-LIMIT=25";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 25;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitLimit() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testExplicitLimit() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
-				"-EXPRESSION=col1" +
-				"-POPULATION=pop"+
+				"-EXPRESSION=ID" +
+				"-POPULATION=CRIMEDATA"+
 				"-LIMIT=25";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 25;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultOrderBy() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testDefaultOrderBy() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1" +
-				"-POPULATION=pop" +
-				"-ORDER_BY=col1";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+				"-COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA" +
+				"-ORDER_BY=ID";
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitOrderBy() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testExplicitOrderBy() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
-				"-EXPRESSION=col1" +
-				"-POPULATION=pop"+
-				"-ORDER_BY=col1";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+				"-EXPRESSION=ID" +
+				"-POPULATION=CRIMEDATA"+
+				"-ORDER_BY=ID";
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultConfidence() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testDefaultConfidence() throws Exception {
 		// N.B. Confidence works differently in default mode and explicit mode. i
 		// This infers missing values iff this can be done with confidence >= given value.
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1" +
-				"-POPULATION=pop" +
+				"-COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA" +
 				"-WITH_CONFIDENCE=0.8"+
 				"-LIMIT=0";		//XXX Bad way of ensuring the number of columns is actually achieved 
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 0;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitConfidence() throws BQLException, InvalidReturnFormatException, Exception {
+	public void testExplicitConfidence() throws Exception {
 		// N.B. Confidence works differently in default mode and explicit mode. i
 		// This just infers the values and writes the confidence into another column.
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
-				"-EXPRESSION=col1!PREDICT!col1!AS!c!CONFIDENCE!conf" +
-				"-POPULATION=pop"+
-				"-ORDER_BY=col1" + 
+				"-EXPRESSION=ID!PREDICT!ID!AS!i!CONFIDENCE!conf" +
+				"-POPULATION=CRIMEDATA"+
+				"-ORDER_BY=ID" + 
 				"-LIMIT=0";		//XXX Bad way of ensuring the number of columns is actually achieved
-		List<String> expectedColumnNames = Arrays.asList("c, conf");
+		List<String> expectedColumnNames = Arrays.asList("i, conf");
 		int expectedNumberOfRows = 0;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testDefaultConstraint() throws BQLException, InvalidReturnFormatException, Exception{
+	public void testDefaultConstraint() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=col1" +
-				"-POPULATION=pop" + 
+				"-COLNAMES=ID" +
+				"-POPULATION=CRIMEDATA" + 
 				"-WHERE=TRUE";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 	}
 
 	@Test
-	public void testExplicitConstraint() throws BQLException, InvalidReturnFormatException, Exception{
+	public void testExplicitConstraint() throws Exception{
 		String uri = start +
 				"MODE=EXPLICIT_FROM" +
-				"-EXPRESSION=col1" +
-				"-POPULATION=pop" +
+				"-EXPRESSION=ID" +
+				"-POPULATION=CRIMEDATA" +
 				"-WHERE=TRUE";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
