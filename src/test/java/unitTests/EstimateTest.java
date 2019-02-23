@@ -77,10 +77,10 @@ public class EstimateTest {
     public void testBYWithInvalidOptionalsError2() {
         String input =
                 "MODE=BY" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-GROUP_BY=exp2";
+                "-EXPRESSION=exp1" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-GROUP_BY=exp2";
         singleTest(input, null, true);
     }
 
@@ -88,10 +88,10 @@ public class EstimateTest {
     public void testBYWithInvalidOptionalsError3() {
         String input =
                 "MODE=BY" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-ORDER_BY=exp2";
+                "-EXPRESSION=exp1" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-ORDER_BY=exp2";
         singleTest(input, null, true);
     }
 

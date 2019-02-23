@@ -55,7 +55,7 @@ public class ServerConnector {
 		queries = tmp;
 
 		try {
-			URL url = new URL("http://" + server_ip + ":8080");
+			URL url = new URL("http://" + server_ip + ":8082");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST"); 
 			

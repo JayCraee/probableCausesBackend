@@ -16,8 +16,12 @@ public class IntegrationTestFramework {
         return mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
     }
 
+    public static void singleTest(String input, List<String> expectedColumns, Integer expectedRows, MockMvc mockMvc) throws Exception {
+        singleTest(input, expectedColumns, expectedRows, mockMvc, false);
+    }
+
     // Given an input and an expected output
-    public static void singleTest(String input, List<String> expectedColumns, int expectedRows, MockMvc mockMvc) throws BQLException, InvalidReturnFormatException, Exception {
+    public static void singleTest(String input, List<String> expectedColumns, Integer expectedRows, MockMvc mockMvc, boolean expectFailure) throws Exception {
         String result = doRequest(input, mockMvc);
         JSONArray tables;
         try {
@@ -25,6 +29,9 @@ public class IntegrationTestFramework {
         } catch (JSONException e){
             throw new BQLException(result); // This is the case that result is an error message rather than JSON (hopefully)
         }
+
+        if (expectFailure)
+                return;
 
         assertEquals(1, tables.length(), "Incorrect number of tables returned: ");
 
