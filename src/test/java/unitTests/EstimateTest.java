@@ -102,7 +102,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -125,7 +125,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM VARIABLES OF pop) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -148,7 +148,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE VARIABLES OF pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM PAIRWISE VARIABLES OF pop) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -181,7 +181,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM PAIRWISE pop AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM PAIRWISE pop) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -265,25 +265,6 @@ public class EstimateTest {
     }
 
     @Test
-    public void testWithRealisticExpression() {
-        String input =
-                "MODE=BY" +
-                "-EXPRESSION=x,!y" +
-                "-EXPNAME=col" +
-                "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE x, y FROM pop AS col) ORDER BY col LIMIT 50";
-        singleTest(input, expectedOutput);
-
-        input =
-                "MODE=FROM" +
-                "-EXPRESSION=x,!y" +
-                "-EXPNAME=col" +
-                "-POPULATION=pop";
-        expectedOutput = "SELECT * BY (ESTIMATE x, y FROM pop AS col) ORDER BY col LIMIT 50";
-        singleTest(input, expectedOutput);
-    }
-
-    @Test
     public void testWithEqualityInCondition() {
         String input =
                 "MODE=FROM" +
@@ -291,7 +272,7 @@ public class EstimateTest {
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=x=y";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp FROM pop WHERE x=y AS col) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop WHERE x=y) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
     }
 }

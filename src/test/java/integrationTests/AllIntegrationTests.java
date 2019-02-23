@@ -6,7 +6,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		EstimateTest.class})
+		EstimateTest.class,
+		SimulateTest.class,
+		InferTest.class,
+		SelectTest.class,
+})
 
 public class AllIntegrationTests {
 }
