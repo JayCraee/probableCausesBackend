@@ -45,13 +45,13 @@ public class SimulateTest {
     @Test
     public void testSimulate() {
         String input =
-                "COLNAMES=col1, col2" +
+                "COLNAMES=col1,col2" +
                 "-POPULATION=pop";
         String expectedOutput = "SELECT col1||\"--\"||col2 as col1-col2 COUNT(col1-col2) AS frequency FROM (SIMULATE col1,col2 FROM pop LIMIT 5000) GROUP BY col1-col2 ORDER BY frequency DESC LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
-                "COLNAMES=col1, col2" +
+                "COLNAMES=col1,col2" +
                 "-POPULATION=pop" +
                 "-GIVEN=exp1" +
                 "-LIMIT1=10000" +
@@ -83,14 +83,14 @@ public class SimulateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingPopulation() {
-        String input = "COLNAMES=col1, col2";
+        String input = "COLNAMES=col1,col2";
         singleTest(input, null, true);
     }
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidFieldNameError() {
         String input =
-                "COLNAMES=col1, col2" +
+                "COLNAMES=col1,col2" +
                 "-POPULATION=pop" +
                 "-fake_news=exp";
         singleTest(input, null, true);
