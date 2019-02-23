@@ -27,9 +27,6 @@ public class Estimate extends Query {
         super(unparsed);
         metaData = new HashMap<>();
 
-        //clean up expressions
-        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
-
         //sanity check on inputs
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
@@ -41,6 +38,10 @@ public class Estimate extends Query {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
+
+        //clean up expressions
+        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
+
         parsedInputs.put("MODE", parsedInputs.get("MODE").replace("_", " "));
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
             throw new MalformedParametersException("Error: Mode not supplied");
@@ -65,8 +66,6 @@ public class Estimate extends Query {
                 } else {
                     ss += "LIMIT 50";
                 }
-
-
                 break;
             }
             case "FROM": {
@@ -83,7 +82,6 @@ public class Estimate extends Query {
                         ss += " " + opt.replace("_", " ") + " " + parsedInputs.get(opt);
                     }
                 }
-
 
                 ss += ")";
 
@@ -103,19 +101,15 @@ public class Estimate extends Query {
         return ret;
     }
 
-
     public static void main(String[] args) {
         String input =
                 "MODE=BY" +
-                        "-EXPRESSION=exp" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-LIMIT=1000";
-
+                "-EXPRESSION=exp" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-LIMIT=1000";
         Estimate targest = new Estimate(input);
         System.out.println(targest.getBQL());
         System.out.println(targest.getParsedInputs());
     }
-
-
 }

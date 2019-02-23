@@ -114,7 +114,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM pop WHERE exp2 GROUP BY exp3) ORDER BY exp4LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -137,7 +137,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -159,7 +159,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM PAIRWISE VARIABLES OF pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM PAIRWISE VARIABLES OF pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -192,7 +192,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 FROM PAIRWISE pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM PAIRWISE pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
