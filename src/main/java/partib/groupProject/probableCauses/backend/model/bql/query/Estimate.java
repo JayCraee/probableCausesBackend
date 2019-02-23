@@ -53,10 +53,20 @@ public class Estimate extends Query {
 
         switch (super.parsedInputs.get("MODE")) {
             case "BY": {
+                ss += "SELECT * FROM ( ";
                 ss += "ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
+                ss += " ) ";
+
+                if (super.fields.contains("LIMIT")) {
+                    ss += "LIMIT " + parsedInputs.get("LIMIT");
+                } else {
+                    ss += "LIMIT 50";
+                }
+
+
                 break;
             }
             case "FROM": {
@@ -65,6 +75,7 @@ public class Estimate extends Query {
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
+                ss += " AS " + parsedInputs.get("EXPNAME");
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 for (String opt : innerFields) {
@@ -72,7 +83,7 @@ public class Estimate extends Query {
                         ss += " " + opt.replace("_", " ") + " " + parsedInputs.get(opt);
                     }
                 }
-                ss += " AS " + parsedInputs.get("EXPNAME");
+
 
                 ss += ")";
 
@@ -95,15 +106,11 @@ public class Estimate extends Query {
 
     public static void main(String[] args) {
         String input =
-            "MODE=FROM_VARIABLES_OF" +
-            "-EXPRESSION=exp1" +
-            "-EXPNAME=col" +
-            "-POPULATION=pop" +
-            "-WHERE=exp2" +
-            "-GROUP_BY=exp3" +
-            "-ORDER_BY=exp4" +
-            "-LIMIT=1000";
-
+                "MODE=BY" +
+                        "-EXPRESSION=exp" +
+                        "-EXPNAME=col" +
+                        "-POPULATION=pop" +
+                        "-LIMIT=1000";
 
         Estimate targest = new Estimate(input);
         System.out.println(targest.getBQL());

@@ -57,7 +57,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
-                "LIMIT=1000";
+                "-LIMIT=1000";
         expectedOutput = "SELECT * FROM (ESTIMATE exp BY pop) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
