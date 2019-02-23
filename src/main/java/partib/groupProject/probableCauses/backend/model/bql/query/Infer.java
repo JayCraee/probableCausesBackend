@@ -65,7 +65,7 @@ public class Infer extends Query {
         super(unparsed);
 
         if (super.fields.contains("EXPRESSION")) {
-            parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSOIN")));
+            parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
         }
 
         //sanity check on inputs
