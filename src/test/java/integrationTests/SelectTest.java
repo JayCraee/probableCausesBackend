@@ -65,7 +65,7 @@ public class SelectTest {
 		String uri = start +
 				"COLUMNS=ID" +
 				"-TABLE=CRIMEDATA";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -77,7 +77,7 @@ public class SelectTest {
 				"COLUMNS=ID" +
 				"-TABLE=CRIMEDATA" +
 				"-WHERE=TRUE";
-		List<String> expectedColumnNames = Arrays.asList("col1");
+		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 		
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -86,7 +86,7 @@ public class SelectTest {
 				"COLUMNS=ID" +
 				"-TABLE=CRIMEDATA" +
 				"-WHERE=FALSE";
-		expectedColumnNames = Arrays.asList("col1");
+		expectedColumnNames = Arrays.asList("ID");
 		expectedNumberOfRows = 0;
 		
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
