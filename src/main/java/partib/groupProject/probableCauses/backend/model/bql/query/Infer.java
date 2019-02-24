@@ -4,106 +4,92 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashMap;
 
 public class Infer extends Query {
-    private static final ArrayList<String> compulsoryFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"MODE", "POPULATION"}));
+	private static final ArrayList<String> compulsoryFields =
+	        new ArrayList<>(Arrays.asList("MODE", "POPULATION", "COLEXP"));
+	
+	private static final List<String> earlyOptionalFields = Arrays.asList("WITH CONFIDENCE");
 
-    private static final ArrayList<String> optionalFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"COLNAMES", "EXPRESSION", "WITH CONFIDENCE", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
+	private static final List<String> optionalFields = Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT");
+	
+	private static final List<String> modeOptions = Arrays.asList("FROM", "EXPLICIT FROM");
+	
+	@Override
+	public List<String> getBQL() {
+		HashMap<String, String> cleanInputs = new HashMap();
+		for(String field : super.parsedInputs.keySet()){
+			boolean compulsory = compulsoryFields.contains(field);
+			boolean   optional =   optionalFields.contains(field) || earlyOptionalFields.contains(field);
+			if(!(compulsory || optional)) throw new MalformedParametersException("Invalid field detected: " + field);
+			
+			String value = parsedInputs.get(field);
+			cleanInputs.put(field, cleanExpression(value));
+		}
+		
+		String res = "INFER ";
+		
+		if(!modeOptions.contains(cleanInputs.get("MODE")))
+			throw new MalformedParametersException("Invalid Mode: " + cleanInputs.get("MODE"));
 
-    private static final ArrayList<String> modeOptions =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"FROM", "EXPLICIT FROM"}));
+		boolean expl = cleanInputs.get("MODE").equals("EXPLICIT FROM");
 
-    @Override
-    public List<String> getBQL() {
-        for(String field : super.parsedInputs.keySet()){
-            boolean compulsory = compulsoryFields.contains(field);
-            boolean   optional =   optionalFields.contains(field);
-            if(!(compulsory || optional)) throw new MalformedParametersException("Invalid field detected: " + field);
+		if(expl) res += "EXPLICIT";
 
-            String value = parsedInputs.get(field);
-            parsedInputs.replace(field, cleanExpression(value));
-        }
+		res += " " + cleanInputs.get("COLEXP") + " ";
 
-        List<String> ret = new ArrayList<>();
-        String ss = "";
+		for(String field : earlyOptionalFields){
+			switch(field){
+				case "WITH CONFIDENCE":
+					if(expl && cleanInputs.keySet().contains(field)) {
+						throw new MalformedParametersException("Mode " + cleanInputs.get("MODE") + " not supported with field 'WITH CONFIDENCE'!");
+					}
+					if(expl) continue;
+					if(!cleanInputs.keySet().contains(field))
+						cleanInputs.put("WITH CONFIDENCE", "0.7");
+					res += "WITH CONFIDENCE " + cleanInputs.get("WITH CONFIDENCE");
+					break;
+			}
+		}
 
-        ss += "INFER";
+		res += " FROM " + cleanInputs.get("POPULATION");
 
-        switch (super.parsedInputs.get("MODE")) {
-            case "FROM": {
-                System.out.println("CASE FROM");
-                ss += " " + parsedInputs.get("COLNAMES");
-                if (fields.contains("WITH CONFIDENCE")) {
-                    ss += " WITH CONFIDENCE " + parsedInputs.get("WITH CONFIDENCE");
-                } else {
-                    ss += " WITH CONFIDENCE 0.7";
-                }
-                break;
-            }
-            case "EXPLICIT FROM": {
-                System.out.println("CASE EXPLICIT FROM");
-                ss += " EXPLICIT " + parsedInputs.get("EXPRESSION");
-                ss += " FROM ";
-                break;
-            }
-        }
-        if (fields.contains("WHERE")) {
-            // TODO
-        }
-        if (fields.contains("GROUP BY")) {
-            // TODO
-        }
-        if (fields.contains("ORDER BY")) {
-            ss += " ORDER BY " + parsedInputs.get("ORDER BY");
-        }
-        if (fields.contains("LIMIT")) {
-            ss += " LIMIT " + parsedInputs.get("LIMIT");
-        } else {
-            ss += " LIMIT 50";
-        }
-        ret.add(ss);
-        return ret;
-    }
+		if(!cleanInputs.keySet().contains("LIMIT"))
+			cleanInputs.put("LIMIT", "50");
 
-    public Infer(String unparsed) {
-        super(unparsed);
+		for(String field : optionalFields){
+			if(cleanInputs.keySet().contains(field)){
+				res += " " + field + " " + cleanInputs.get(field);
+			}
+		}
 
-        if (super.fields.contains("EXPRESSION")) {
-            parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
-        }
-
-        //sanity check on inputs
-        for (String k : compulsoryFields) {
-            if (!super.fields.contains(k)) {
-                throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
-            }
-        }
-        for (String k : super.fields) {
-            if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
-                throw new MalformedParametersException("Error: Query field <"+k+"> not present");
-            }
-        }
-
-        if (parsedInputs.get("MODE") == "FROM") {
-            if (!super.fields.contains("COLNAMES")) {
-                throw new MalformedParametersException("Error: COLNAMES field required when MODE=FROM");
-            }
-        }
-        if (parsedInputs.get("MODE") == "EXPLICIT FROM") {
-            if (!super.fields.contains("EXPRESSION")) {
-                throw new MalformedParametersException("Error: EXPRESSION field required when MODE=EXPLICIT_FROM");
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
-        //Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
-        System.out.println(targinf.getBQL());
-    }
+		return Arrays.asList(res + ";");
+	}
+	
+	public Infer(String unparsed) {
+	    super(unparsed);
+	
+	    if (super.fields.contains("EXPRESSION")) {
+	        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
+	    }
+	
+	    //sanity check on inputs
+	    for (String k : compulsoryFields) {
+	        if (!super.fields.contains(k)) {
+	            throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
+	        }
+	    }
+	    for (String k : super.fields) {
+	        if (!compulsoryFields.contains(k) && !optionalFields.contains(k) && !earlyOptionalFields.contains(k)) {
+	            throw new MalformedParametersException("Error: Query field <"+k+"> not present");
+	        }
+	    }
+	}
+	
+	public static void main(String[] args) {
+	    Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
+	    //Infer targinf = new Infer("COLEXP=col1-MODE=FROM-POPULATION=hell_data");
+	    System.out.println(targinf.getBQL());
+	}
 }

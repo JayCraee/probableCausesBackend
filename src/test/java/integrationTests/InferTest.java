@@ -34,7 +34,7 @@ public class InferTest {
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoColNames() throws Exception{
+	public void testNoCOLEXP() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
 				"-POPULATION=CRIMEDATA";
@@ -46,7 +46,7 @@ public class InferTest {
 	public void testNoPopulation() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID";
+				"-COLEXP=ID";
 
 		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
@@ -54,7 +54,7 @@ public class InferTest {
 	@Test (expected = MalformedParametersException.class)
 	public void testBadField() throws Exception{
 		String uri = start +
-				"COLNAMES=ID" +
+				"COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" + 
 				"-ANFIELD=bad";
 
@@ -66,7 +66,7 @@ public class InferTest {
 	public void testDefault() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
@@ -78,7 +78,7 @@ public class InferTest {
 	public void testExplicit() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT!FROM" +
-				"-EXPRESSION=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
@@ -90,7 +90,7 @@ public class InferTest {
 	public void testDefaultLimit() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" +
 				"-LIMIT=25";
 		List<String> expectedColumnNames = Arrays.asList("ID");
@@ -103,7 +103,7 @@ public class InferTest {
 	public void testExplicitLimit() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT!FROM" +
-				"-EXPRESSION=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA"+
 				"-LIMIT=25";
 		List<String> expectedColumnNames = Arrays.asList("ID");
@@ -116,7 +116,7 @@ public class InferTest {
 	public void testDefaultOrderBy() throws Exception {
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" +
 				"-ORDER_BY=ID";
 		List<String> expectedColumnNames = Arrays.asList("ID");
@@ -129,7 +129,7 @@ public class InferTest {
 	public void testExplicitOrderBy() throws Exception {
 		String uri = start +
 				"MODE=EXPLICIT!FROM" +
-				"-EXPRESSION=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA"+
 				"-ORDER_BY=ID";
 		List<String> expectedColumnNames = Arrays.asList("ID");
@@ -144,7 +144,7 @@ public class InferTest {
 		// This infers missing values iff this can be done with confidence >= given value.
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" +
 				"-WITH_CONFIDENCE=0.8"+
 				"-LIMIT=0";		//XXX Bad way of ensuring the number of columns is actually achieved 
@@ -160,7 +160,7 @@ public class InferTest {
 		// This just infers the values and writes the confidence into another column.
 		String uri = start +
 				"MODE=EXPLICIT!FROM" +
-				"-EXPRESSION=ID!PREDICT!ID!AS!i!CONFIDENCE!conf" +
+				"-COLEXP=PREDICT!ID!AS!i!CONFIDENCE!conf" +
 				"-POPULATION=CRIMEDATA"+
 				"-ORDER_BY=ID" + 
 				"-LIMIT=0";		//XXX Bad way of ensuring the number of columns is actually achieved
@@ -174,9 +174,9 @@ public class InferTest {
 	public void testDefaultConstraint() throws Exception{
 		String uri = start +
 				"MODE=FROM" +
-				"-COLNAMES=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" + 
-				"-WHERE=TRUE";
+				"-WHERE=ID>1";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 
@@ -187,9 +187,9 @@ public class InferTest {
 	public void testExplicitConstraint() throws Exception{
 		String uri = start +
 				"MODE=EXPLICIT!FROM" +
-				"-EXPRESSION=ID" +
+				"-COLEXP=ID" +
 				"-POPULATION=CRIMEDATA" +
-				"-WHERE=TRUE";
+				"-WHERE=ID>1";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 

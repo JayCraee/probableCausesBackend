@@ -31,45 +31,33 @@ public class SelectTest {
 	public void testEmptyRejected() throws Exception{
 		String uri = start;
 
-		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+		IntegrationTestFramework.singleTest(uri, null, null, mockMvc, true);
 	}
 
 	@Test (expected = MalformedParametersException.class)
 	public void testNoTable() throws Exception{
-		try{
 		String uri = start +
 				"COLNAMES=ID";
 
-		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
-		} catch(NestedServletException n) {
-			throw (Exception)n.getCause();
-		}
+		IntegrationTestFramework.singleTest(uri, null, null, mockMvc, true);
 	}
 
 	@Test (expected = MalformedParametersException.class)
 	public void testNoCOLNAMES() throws Exception{
-		try{
 		String uri = start +
 				"TABLE=CRIMEDATA";
 
-		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
-		} catch(NestedServletException n) {
-			throw (Exception)n.getCause();
-		}
+		IntegrationTestFramework.singleTest(uri, null, null, mockMvc, true);
 	}
 
 	@Test (expected = MalformedParametersException.class)
 	public void testBadField() throws Exception{
-		try{
 		String uri = start +
 				"COLNAMES=ID" +
 				"-TABLE=CRIMEDATA" + 
 				"-ANFIELD=bad";
 
-		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
-		} catch(NestedServletException n) {
-			throw (Exception)n.getCause();
-		}
+		IntegrationTestFramework.singleTest(uri, null, null, mockMvc, true);
 	}
 
 
