@@ -109,7 +109,7 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_VARIABLES_OF" +
-                "-EXPRESSION=CORRELATION" +
+                "-EXPRESSION=PROBABILITY!DENSITY!OF!ID" +
                 "-EXPNAME=Correlation" +
                 "-POPULATION=CRIMEDATA";
         List<String> expectedColumnNames = Arrays.asList("Correlation", "ID", "Beat", "District", "Year", "Arrest", "Domestic", "CommunityArea", "Ward");
@@ -143,9 +143,10 @@ public class EstimateTest {
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
                 "-EXPRESSION=MUTUAL!INFORMATION" +
                 "-EXPNAME=mutinf" +
-                "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("ID", "Beat", "District", "Year", "Arrest", "Domestic", "CommunityArea", "Ward");
-        int expectedNumberOfRows = 50;
+                "-POPULATION=CRIMEDATA" +
+                "-LIMIT=5";
+        List<String> expectedColumnNames = Arrays.asList("mutinf", "population_id", "name0", "name1");
+        int expectedNumberOfRows = 5;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -160,9 +161,9 @@ public class EstimateTest {
                 "-POPULATION=CRIMEDATA" +
                 "-WHERE=Year=2000" +
                 "-ORDER_BY=mutinf" +
-                "-LIMIT=100";
-        List<String> expectedColumnNames = Arrays.asList("ID", "Beat", "District", "Year", "Arrest", "Domestic", "CommunityArea", "Ward", "mutinf");
-        int expectedNumberOfRows = 100;
+                "-LIMIT=5";
+        List<String> expectedColumnNames = Arrays.asList("mutinf", "population_id", "name0", "name1");
+        int expectedNumberOfRows = 5;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -172,7 +173,7 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=MUTUAL!INFORMATION" +
+                "-EXPRESSION=ID" +
                 "-EXPNAME=mutinf" +
                 "-POPULATION=CRIMEDATA" +
                 "-GROUP_BY=Year";
