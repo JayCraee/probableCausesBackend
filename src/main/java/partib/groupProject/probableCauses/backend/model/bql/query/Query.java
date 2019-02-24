@@ -2,6 +2,7 @@ package partib.groupProject.probableCauses.backend.model.bql.query;
 
 import java.lang.reflect.MalformedParametersException;
 import java.util.*;
+import java.util.Arrays;
 
 public class Query {
     protected Map<String, String> metaData;
@@ -35,14 +36,13 @@ public class Query {
 
         for (String s : ss.split("-")) {
             String[] kv = s.split("=");
-            if (kv.length != 2) {
-                if (kv.length == 1){
-                    throw new MalformedParametersException("Error: No value found for field <"+kv[0]+">");
-                } else {
-                    throw new MalformedParametersException("Error: Each field should be separated by '-' and should contain exactly 1 '='");
-                }
+            if (kv.length == 1) {
+                throw new MalformedParametersException("Error: No value found for field <"+kv[0]+">");
             } else {
                 if (!fields.contains(kv[0])) {
+                    ArrayList<String> tmp = new ArrayList(Arrays.asList(kv));
+                    tmp.remove(0);
+                    String value = String.join("=", tmp);
                     parsedInputs.put(kv[0].replace("_", " "), kv[1]);
                     fields.add(kv[0].replace("_", " "));
                 } else {
