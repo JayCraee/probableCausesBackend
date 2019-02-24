@@ -43,7 +43,7 @@ public class Query {
                     ArrayList<String> tmp = new ArrayList(Arrays.asList(kv));
                     tmp.remove(0);
                     String value = String.join("=", tmp);
-                    parsedInputs.put(kv[0].replace("_", " "), kv[1]);
+                    parsedInputs.put(kv[0].replace("_", " "), value);
                     fields.add(kv[0].replace("_", " "));
                 } else {
                     throw new MalformedParametersException("Error: Repeated field <"+kv[0]+">");
