@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.NestedServletException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,12 +23,18 @@ public class IntegrationTestFramework {
 
     // Given an input and an expected output
     public static void singleTest(String input, List<String> expectedColumns, Integer expectedRows, MockMvc mockMvc, boolean expectFailure) throws Exception {
-        String result = doRequest(input, mockMvc);
+        String result;
+        try {
+            result = doRequest(input, mockMvc);
+        } catch (NestedServletException e) { //Catch and rethrow errors in the backend (hopefully mostly MalformedParametersException)
+            throw (Exception)e.getCause();
+        }
+
         JSONArray tables;
         try {
             tables = new JSONArray(result);
         } catch (JSONException e){
-            throw new BQLException(result); // This is the case that result is an error message rather than JSON (hopefully)
+            throw new BQLException(result); // Case that result is an error message rather than JSON (hopefully)
         }
 
         if (expectFailure)
