@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.Arrays;
 
 public class Query {
-    protected Map<String, String> metaData;
     protected String unparsed;
     protected final Map<String, String> parsedInputs;
     protected final Set<String> fields;

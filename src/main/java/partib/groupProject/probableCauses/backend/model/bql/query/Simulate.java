@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Simulate extends Query {
-    private static final ArrayList<String> compulsoryFields =
-            new ArrayList<>(Arrays.asList("COLNAMES", "POPULATION"));
+    private static final List<String> compulsoryFields =
+            Arrays.asList("COLNAMES", "POPULATION");
 
-    private static final ArrayList<String> optionalFields =
-            new ArrayList<>(Arrays.asList("GIVEN", "LIMIT1", "LIMIT2"));
+    private static final List<String> optionalFields =
+            Arrays.asList("GIVEN", "LIMIT1", "LIMIT2");
 
     public Simulate(String unparsed) {
         super(unparsed);

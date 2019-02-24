@@ -5,7 +5,6 @@ import java.util.*;
 
 
 public class Estimate extends Query {
-    private final Map<String, String> metaData;
 
     private static final List<String> modeOptions =
             Arrays.asList("BY", "FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE");
