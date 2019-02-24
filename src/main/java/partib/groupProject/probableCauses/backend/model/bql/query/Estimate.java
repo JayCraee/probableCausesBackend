@@ -22,7 +22,7 @@ public class Estimate extends Query {
 
     public Estimate(String unparsed) throws MalformedParametersException {
         super(unparsed);
-        metaData = new HashMap<>();
+
 
         //sanity check on inputs
         for (String k : compulsoryFields) {
@@ -48,7 +48,7 @@ public class Estimate extends Query {
         //Construct permittedFields
 
 
-        permittedFields.put("BY", new HashSet<String>(Arrays.asList("HAHA", "TEST")));
+        permittedFields.put("BY", new HashSet<>(Arrays.asList("HAHA", "TEST")));
 
 
     }
