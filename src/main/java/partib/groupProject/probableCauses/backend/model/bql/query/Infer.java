@@ -20,10 +20,6 @@ public class Infer extends Query {
 	public List<String> getBQL() {
 		HashMap<String, String> cleanInputs = new HashMap();
 		for(String field : super.parsedInputs.keySet()){
-			boolean compulsory = compulsoryFields.contains(field);
-			boolean   optional =   optionalFields.contains(field) || earlyOptionalFields.contains(field);
-			if(!(compulsory || optional)) throw new MalformedParametersException("Invalid field detected: " + field);
-			
 			String value = parsedInputs.get(field);
 			cleanInputs.put(field, cleanExpression(value));
 		}
@@ -35,23 +31,24 @@ public class Infer extends Query {
 
 		boolean expl = cleanInputs.get("MODE").equals("EXPLICIT FROM");
 
-		if(expl) res += "EXPLICIT";
 
-		res += " " + cleanInputs.get("COLEXP") + " ";
+		if(expl){
 
-		for(String field : earlyOptionalFields){
-			switch(field){
-				case "WITH CONFIDENCE":
-					if(expl && cleanInputs.keySet().contains(field)) {
-						throw new MalformedParametersException("Mode " + cleanInputs.get("MODE") + " not supported with field 'WITH CONFIDENCE'!");
-					}
-					if(expl) continue;
-					if(!cleanInputs.keySet().contains(field))
-						cleanInputs.put("WITH CONFIDENCE", "0.7");
-					res += "WITH CONFIDENCE " + cleanInputs.get("WITH CONFIDENCE");
-					break;
-			}
+			res += "EXPLICIT";
+			res += " " + cleanInputs.get("COLEXP") + " ";
+
+			if(cleanInputs.containsKey("WITH CONFIDENCE"))
+				throw new MalformedParametersException("Mode " + cleanInputs.get("MODE") + " not supported with field 'WITH CONFIDENCE'!");
+
+		} else {
+
+			res += " " + cleanInputs.get("COLEXP") + " ";
+			if(!cleanInputs.keySet().contains("WITH CONFIDENCE"))
+				cleanInputs.put("WITH CONFIDENCE", "0.7");
+			res += "WITH CONFIDENCE " + cleanInputs.get("WITH CONFIDENCE");
+
 		}
+
 
 		res += " FROM " + cleanInputs.get("POPULATION");
 
@@ -59,7 +56,7 @@ public class Infer extends Query {
 			cleanInputs.put("LIMIT", "50");
 
 		for(String field : optionalFields){
-			if(cleanInputs.keySet().contains(field)){
+			if(cleanInputs.containsKey(field)){
 				res += " " + field + " " + cleanInputs.get(field);
 			}
 		}
@@ -68,28 +65,24 @@ public class Infer extends Query {
 	}
 	
 	public Infer(String unparsed) {
-	    super(unparsed);
-	
-	    if (super.fields.contains("EXPRESSION")) {
-	        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
-	    }
-	
-	    //sanity check on inputs
-	    for (String k : compulsoryFields) {
-	        if (!super.fields.contains(k)) {
-	            throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
-	        }
-	    }
-	    for (String k : super.fields) {
-	        if (!compulsoryFields.contains(k) && !optionalFields.contains(k) && !earlyOptionalFields.contains(k)) {
-	            throw new MalformedParametersException("Error: Query field <"+k+"> not present");
-	        }
-	    }
+		super(unparsed);
+
+		//sanity check on inputs
+		for (String k : compulsoryFields) {
+			if (!super.fields.contains(k)) {
+				throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
+			}
+		}
+		for (String k : super.fields) {
+			if (!compulsoryFields.contains(k) && !optionalFields.contains(k) && !earlyOptionalFields.contains(k)) {
+				throw new MalformedParametersException("Error: Query field <"+k+"> not present");
+			}
+		}
 	}
-	
+
 	public static void main(String[] args) {
-	    Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
-	    //Infer targinf = new Infer("COLEXP=col1-MODE=FROM-POPULATION=hell_data");
-	    System.out.println(targinf.getBQL());
+		Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
+		//Infer targinf = new Infer("COLEXP=col1-MODE=FROM-POPULATION=hell_data");
+		System.out.println(targinf.getBQL());
 	}
 }
