@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.HashMap;
 
 public class Infer extends Query {
-	private static final ArrayList<String> compulsoryFields =
-	        new ArrayList<>(Arrays.asList("MODE", "POPULATION", "COLEXP"));
+	private static final List<String> compulsoryFields = Arrays.asList("MODE", "POPULATION", "COLEXP");
 	
 	private static final List<String> earlyOptionalFields = Arrays.asList("WITH CONFIDENCE");
 
@@ -18,7 +17,7 @@ public class Infer extends Query {
 	
 	@Override
 	public List<String> getBQL() {
-		HashMap<String, String> cleanInputs = new HashMap();
+		HashMap<String, String> cleanInputs = new HashMap<>();
 		for(String field : super.parsedInputs.keySet()){
 			boolean compulsory = compulsoryFields.contains(field);
 			boolean   optional =   optionalFields.contains(field) || earlyOptionalFields.contains(field);

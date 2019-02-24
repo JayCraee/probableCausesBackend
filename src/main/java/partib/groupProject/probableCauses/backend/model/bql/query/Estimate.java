@@ -7,21 +7,19 @@ import java.util.*;
 public class Estimate extends Query {
     private final Map<String, String> metaData;
 
-    private static final ArrayList<String> modeOptions =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"BY","FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE"}));
+    private static final List<String> modeOptions =
+            Arrays.asList("BY", "FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE");
 
-    private static final ArrayList<String> compulsoryFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"MODE", "EXPRESSION", "EXPNAME", "POPULATION"}));
+    private static final List<String> compulsoryFields =
+            Arrays.asList("MODE", "EXPRESSION", "EXPNAME", "POPULATION");
 
-    private static final ArrayList<String> optionalFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
+    private static final List<String> optionalFields =
+            Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT");
 
-    private static final ArrayList<String> innerFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"WHERE", "GROUP BY"}));
+    private static final List<String> innerFields =
+            Arrays.asList("WHERE", "GROUP BY");
+
+    private static final Map<String, Set<String>> permittedFields = new HashMap<>();
 
     public Estimate(String unparsed) throws MalformedParametersException {
         super(unparsed);
@@ -46,6 +44,14 @@ public class Estimate extends Query {
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
             throw new MalformedParametersException("Error: Mode not supplied");
         }
+
+        //Check that we don't have superfluous fields given the MODE option.
+        //Construct permittedFields
+
+
+        permittedFields.put("BY", new HashSet<String>(Arrays.asList("HAHA", "TEST")));
+
+
     }
 
     public List<String> getBQL() {
@@ -103,11 +109,11 @@ public class Estimate extends Query {
 
     public static void main(String[] args) {
         String input =
-                "MODE=BY" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
-                "-POPULATION=pop" +
-                "-LIMIT=1000";
+                "MODE=FROM_PAIRWISE_VARIABLES_OF" +
+                        "-EXPRESSION=exp1" +
+                        "-EXPNAME=col" +
+                        "-POPULATION=pop" +
+                        "-GROUP_BY=exp2";
         Estimate targest = new Estimate(input);
         System.out.println(targest.getBQL());
         System.out.println(targest.getParsedInputs());
