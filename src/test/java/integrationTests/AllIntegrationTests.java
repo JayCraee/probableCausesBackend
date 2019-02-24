@@ -12,5 +12,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		SelectTest.class,
 })
 
+
 public class AllIntegrationTests {
 }

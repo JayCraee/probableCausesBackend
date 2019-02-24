@@ -77,7 +77,7 @@ public class InferTest {
 	@Test
 	public void testExplicit() throws Exception {
 		String uri = start +
-				"MODE=EXPLICIT_FROM" +
+				"MODE=EXPLICIT!FROM" +
 				"-EXPRESSION=ID" +
 				"-POPULATION=CRIMEDATA";
 		List<String> expectedColumnNames = Arrays.asList("ID");
@@ -102,7 +102,7 @@ public class InferTest {
 	@Test
 	public void testExplicitLimit() throws Exception {
 		String uri = start +
-				"MODE=EXPLICIT_FROM" +
+				"MODE=EXPLICIT!FROM" +
 				"-EXPRESSION=ID" +
 				"-POPULATION=CRIMEDATA"+
 				"-LIMIT=25";
@@ -128,7 +128,7 @@ public class InferTest {
 	@Test
 	public void testExplicitOrderBy() throws Exception {
 		String uri = start +
-				"MODE=EXPLICIT_FROM" +
+				"MODE=EXPLICIT!FROM" +
 				"-EXPRESSION=ID" +
 				"-POPULATION=CRIMEDATA"+
 				"-ORDER_BY=ID";
@@ -159,7 +159,7 @@ public class InferTest {
 		// N.B. Confidence works differently in default mode and explicit mode. i
 		// This just infers the values and writes the confidence into another column.
 		String uri = start +
-				"MODE=EXPLICIT_FROM" +
+				"MODE=EXPLICIT!FROM" +
 				"-EXPRESSION=ID!PREDICT!ID!AS!i!CONFIDENCE!conf" +
 				"-POPULATION=CRIMEDATA"+
 				"-ORDER_BY=ID" + 
@@ -186,7 +186,7 @@ public class InferTest {
 	@Test
 	public void testExplicitConstraint() throws Exception{
 		String uri = start +
-				"MODE=EXPLICIT_FROM" +
+				"MODE=EXPLICIT!FROM" +
 				"-EXPRESSION=ID" +
 				"-POPULATION=CRIMEDATA" +
 				"-WHERE=TRUE";

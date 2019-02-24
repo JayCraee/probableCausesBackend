@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.NestedServletException;
 import partib.groupProject.probableCauses.backend.ProbableCausesApplication;
 import partib.groupProject.probableCauses.backend.controller.QueryController;
 
@@ -35,35 +36,70 @@ public class SelectTest {
 
 	@Test (expected = MalformedParametersException.class)
 	public void testNoTable() throws Exception{
+		try{
 		String uri = start +
-				"COLUMNS=ID";
+				"COLNAMES=ID";
 
 		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+		} catch(NestedServletException n) {
+			throw (Exception)n.getCause();
+		}
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testNoColumns() throws Exception{
+	public void testNoCOLNAMES() throws Exception{
+		try{
 		String uri = start +
 				"TABLE=CRIMEDATA";
 
 		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+		} catch(NestedServletException n) {
+			throw (Exception)n.getCause();
+		}
 	}
 
 	@Test (expected = MalformedParametersException.class)
 	public void testBadField() throws Exception{
+		try{
 		String uri = start +
-				"COLUMNS=ID" +
+				"COLNAMES=ID" +
 				"-TABLE=CRIMEDATA" + 
 				"-ANFIELD=bad";
 
 		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
+		} catch(NestedServletException n) {
+			throw (Exception)n.getCause();
+		}
 	}
 
 
 	@Test
 	public void testBase() throws Exception{
 		String uri = start +
-				"COLUMNS=ID" +
+				"COLNAMES=ID" +
+				"-TABLE=CRIMEDATA";
+		List<String> expectedColumnNames = Arrays.asList("ID");
+		int expectedNumberOfRows = 50;
+
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
+	}
+
+	@Test
+	public void testAs() throws Exception{
+		String uri = start +
+				"COLNAMES=ID!AS!IDE" +
+				"-TABLE=CRIMEDATA";
+		List<String> expectedColumnNames = Arrays.asList("IDE");
+		int expectedNumberOfRows = 50;
+
+		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
+	}
+
+	@Test
+	public void testOrderBy() throws Exception{
+		String uri = start +
+				"COLNAMES=ID" +
+				"-ORDER_BY=ID" +
 				"-TABLE=CRIMEDATA";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
@@ -74,18 +110,18 @@ public class SelectTest {
 	@Test
 	public void testConstraint() throws Exception{
 		String uri = start +
-				"COLUMNS=ID" +
+				"COLNAMES=ID" +
 				"-TABLE=CRIMEDATA" +
-				"-WHERE=TRUE";
+				"-WHERE=ID>1";
 		List<String> expectedColumnNames = Arrays.asList("ID");
 		int expectedNumberOfRows = 50;
 		
 		IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
 
 		uri = start +
-				"COLUMNS=ID" +
+				"COLNAMES=ID" +
 				"-TABLE=CRIMEDATA" +
-				"-WHERE=FALSE";
+				"-WHERE=ID<1";
 		expectedColumnNames = Arrays.asList("ID");
 		expectedNumberOfRows = 0;
 		

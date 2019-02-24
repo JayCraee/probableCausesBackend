@@ -20,6 +20,15 @@ public class Infer extends Query {
 
     @Override
     public List<String> getBQL() {
+        for(String field : super.parsedInputs.keySet()){
+            boolean compulsory = compulsoryFields.contains(field);
+            boolean   optional =   optionalFields.contains(field);
+            if(!(compulsory || optional)) throw new MalformedParametersException("Invalid field detected: " + field);
+
+            String value = parsedInputs.get(field);
+            parsedInputs.replace(field, cleanExpression(value));
+        }
+
         List<String> ret = new ArrayList<>();
         String ss = "";
 
@@ -93,7 +102,7 @@ public class Infer extends Query {
     }
 
     public static void main(String[] args) {
-        Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
+        Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
         //Infer targinf = new Infer("COLNAMES=col1-MODE=FROM-POPULATION=hell_data");
         System.out.println(targinf.getBQL());
     }
