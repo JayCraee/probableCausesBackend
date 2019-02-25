@@ -53,7 +53,7 @@ public class Infer extends Query {
 			}
 		}
 
-		return Arrays.asList(res);
+		return Arrays.asList(res + ";");
 	}
 	
 	public Infer(String unparsed) {

@@ -53,6 +53,6 @@ public class Select extends Query {
 			}
 		}
 
-		return Arrays.asList(res);
+		return Arrays.asList(res + ";");
 	}
 }
