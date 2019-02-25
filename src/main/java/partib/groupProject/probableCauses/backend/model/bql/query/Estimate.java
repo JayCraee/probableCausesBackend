@@ -18,8 +18,6 @@ public class Estimate extends Query {
     private static final List<String> innerFields =
             Arrays.asList("WHERE", "GROUP BY");
 
-    private static final Map<String, Set<String>> permittedFields = new HashMap<>();
-
     public Estimate(String unparsed) throws MalformedParametersException {
         super(unparsed);
 
@@ -47,10 +45,26 @@ public class Estimate extends Query {
         //Check that we don't have superfluous fields given the MODE option.
         //Construct permittedFields
 
+        List<String> disallowedFields;
+        switch (super.parsedInputs.get("MODE")) {
+            case "BY":
+                disallowedFields = Arrays.asList("WHERE", "GROUP BY", "ORDER BY");
+                break;
+            case "FROM PAIRWISE":
+                disallowedFields = Arrays.asList("GROUP BY");
+                break;
+            case "FROM PAIRWISE VARIABLES OF":
+                disallowedFields = Arrays.asList("GROUP BY");
+                break;
+            default:
+                disallowedFields = new ArrayList<>();
+        }
 
-        permittedFields.put("BY", new HashSet<>(Arrays.asList("HAHA", "TEST")));
-
-
+        for (String k : disallowedFields) {
+            if (super.fields.contains(k)) {
+                throw new MalformedParametersException("Error: field <"+k+"> is not allowed with the <"+super.parsedInputs.get("MODE")+"> mode");
+            }
+        }
     }
 
     public List<String> getBQL() {
