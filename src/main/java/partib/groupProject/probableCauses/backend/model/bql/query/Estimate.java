@@ -21,30 +21,27 @@ public class Estimate extends Query {
     public Estimate(String unparsed) throws MalformedParametersException {
         super(unparsed);
 
-
-        //sanity check on inputs
+        // Check for missing compulsory fields
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
+        // TODO what does this bit check for exactly? Please add a comment
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
-
-        //clean up expressions
-        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
-
+        // Check MODE is valid
         parsedInputs.put("MODE", parsedInputs.get("MODE").replace("_", " "));
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
-            throw new MalformedParametersException("Error: Mode not supplied");
+            throw new MalformedParametersException("Error: Invalid mode supplied");
         }
+        // Clean up expressions
+        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
 
         //Check that we don't have superfluous fields given the MODE option.
-        //Construct permittedFields
-
         List<String> disallowedFields;
         switch (super.parsedInputs.get("MODE")) {
             case "BY":
@@ -59,7 +56,6 @@ public class Estimate extends Query {
             default:
                 disallowedFields = new ArrayList<>();
         }
-
         for (String k : disallowedFields) {
             if (super.fields.contains(k)) {
                 throw new MalformedParametersException("Error: field <"+k+"> is not allowed with the <"+super.parsedInputs.get("MODE")+"> mode");
@@ -118,17 +114,5 @@ public class Estimate extends Query {
         }
         ret.add(ss);
         return ret;
-    }
-
-    public static void main(String[] args) {
-        String input =
-                "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-GROUP_BY=exp2";
-        Estimate targest = new Estimate(input);
-        System.out.println(targest.getBQL());
-        System.out.println(targest.getParsedInputs());
     }
 }
