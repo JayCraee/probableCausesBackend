@@ -61,7 +61,7 @@ public class SelectTest {
 	public void testBase() {
 	
 		String in = "COLNAMES=col-TABLE=tab";
-		String exp = "SELECT COL FROM TAB";
+		String exp = "SELECT COL FROM TAB LIMIT 50;";
 		
 		singleTest(in, exp);
 	
@@ -71,7 +71,7 @@ public class SelectTest {
 	public void testWhere() {
 	
 		String in = "TABLE=tab-COLNAMES=col-WHERE=col<5";
-		String exp = "SELECT COL FROM TAB WHERE COL<5";
+		String exp = "SELECT COL FROM TAB WHERE COL<5 LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -79,7 +79,7 @@ public class SelectTest {
 	@Test
 	public void testGroupBy() {
 		String in = "COLNAMES=col1,col2-TABLE=tab-GROUP_BY=col1";
-		String exp = "SELECT COL1,COL2 FROM TAB GROUP BY COL1";
+		String exp = "SELECT COL1,COL2 FROM TAB GROUP BY COL1 LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -87,12 +87,12 @@ public class SelectTest {
 	@Test
 	public void testOrderBy() {
 		String in = "COLNAMES=col1,col2-TABLE=tab-ORDER_BY=col1";
-		String exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1";
+		String exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1 LIMIT 50;";
 		
 		singleTest(in, exp);
 
 		in = "COLNAMES=col1,col2-TABLE=tab-ORDER_BY=col1!DESC";
-		exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1 DESC";
+		exp = "SELECT COL1,COL2 FROM TAB ORDER BY COL1 DESC LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -101,7 +101,7 @@ public class SelectTest {
 	public void testLimit() {
 	
 		String in = "COLNAMES=col-TABLE=tab-LIMIT=50";
-		String exp = "SELECT COL FROM TAB LIMIT 50";
+		String exp = "SELECT COL FROM TAB LIMIT 50;";
 		
 		singleTest(in, exp);
 	
@@ -111,7 +111,7 @@ public class SelectTest {
 	public void testAll() {
 	
 		String in = "COLNAMES=col1,col2-TABLE=tab-WHERE=col1<5-GROUP_BY=col1-ORDER_BY=col1-LIMIT=50";
-		String exp = "SELECT COL1,COL2 FROM TAB WHERE COL1<5 GROUP BY COL1 ORDER BY COL1 LIMIT 50";
+		String exp = "SELECT COL1,COL2 FROM TAB WHERE COL1<5 GROUP BY COL1 ORDER BY COL1 LIMIT 50;";
 		
 		singleTest(in, exp);
 	

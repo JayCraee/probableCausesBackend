@@ -41,7 +41,7 @@ public class InferTest {
 
 	
 	@Test (expected = MalformedParametersException.class)
-	public void testDefaultNoColNames() {
+	public void testDefaultNoCOLEXP() {
 	
 		String in = "MODE=FROM-POPULATION=pop";
 		singleTest(in, null, true);
@@ -49,10 +49,10 @@ public class InferTest {
 	}
 
 	@Test (expected = MalformedParametersException.class)
-	public void testExplicitNoColNames() {
+	public void testExplicitNoCOLEXP() {
 	//TODO: This will currently definitely fail. However, otherwise the BQL generator allows INFER EXPLICITs without column names which is a terrible idea.
 	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop"; 
+		String in = "MODE=EXPLICIT!FROM-POPULATION=pop";
 		singleTest(in, null, true);
 	
 
@@ -60,7 +60,7 @@ public class InferTest {
 	@Test (expected = MalformedParametersException.class)
 	public void testDefaultNoPopulation() {
 	
-		String in = "MODE=FROM-COLNAMES=col";
+		String in = "MODE=FROM-COLEXP=col";
 		singleTest(in, null, true);
 	
 	}
@@ -68,7 +68,7 @@ public class InferTest {
 	@Test (expected = MalformedParametersException.class)
 	public void testExplicitNoPopulation() {
 
-		String in = "MODE=EXPLICIT_FROM-COLNAMES=col"; 
+		String in = "MODE=EXPLICIT!FROM-COLEXP=col";
 		singleTest(in, null, true);
 	
 	}
@@ -76,8 +76,8 @@ public class InferTest {
 	@Test
 	public void testDefaultBase() {
 	
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.7";
+		String in = "MODE=FROM-POPULATION=pop-COLEXP=col";
+		String exp = "INFER COL WITH CONFIDENCE 0.7 FROM POP LIMIT 50;";
 		
 		singleTest(in, exp);
 	
@@ -87,8 +87,8 @@ public class InferTest {
 	@Test
 	public void testExplicitBase() {
 	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop-EXPRESSION=col";
-		String exp = "INFER EXPLICIT COL FROM POP";
+		String in = "MODE=EXPLICIT!FROM-POPULATION=pop-COLEXP=col";
+		String exp = "INFER EXPLICIT COL FROM POP LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -97,8 +97,8 @@ public class InferTest {
 	@Test
 	public void testDefaultConf() {
 	
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col-WITH_CONFIDENCE=0.8";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.8";
+		String in = "MODE=FROM-POPULATION=pop-COLEXP=col-WITH_CONFIDENCE=0.8";
+		String exp = "INFER COL WITH CONFIDENCE 0.8 FROM POP LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -107,8 +107,8 @@ public class InferTest {
 	@Test
 	public void testExplicitConf() {
 	
-		String in = "MODE=EXPLICIT_FROM-POPULATION=pop-EXPRESSION=col1,col2!PREDICT!col2!AS!two!CONFIDENCE!conf2";
-		String exp = "INFER EXPLICIT COL1,COL2 PREDICT COL2 AS TWO CONFIDENCE CONF2 FROM POP WITH CONFIDENCE 0.8";
+		String in = "MODE=EXPLICIT!FROM-POPULATION=pop-COLEXP=PREDICT!col2!AS!two!CONFIDENCE!conf2";
+		String exp = "INFER EXPLICIT PREDICT COL2 AS TWO CONFIDENCE CONF2 FROM POP LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
@@ -116,15 +116,15 @@ public class InferTest {
 	
 	@Test
 	public void testDefaultConstraint() {
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col1,col2-WHERE=col3>5-GROUP_BY=col4-ORDER_BY=col6!ASC";
-		String exp = "INFER COL FROM POP WITH CONFIDENCE 0.7 WHERE COL3>5 GROUP BY COL4 ORDER BY COL6 ASC";
+		String in = "MODE=FROM-POPULATION=pop-COLEXP=col1,col2-WHERE=col3>5-GROUP_BY=col4-ORDER_BY=col6!ASC";
+		String exp = "INFER COL1,COL2 WITH CONFIDENCE 0.7 FROM POP WHERE COL3>5 GROUP BY COL4 ORDER BY COL6 ASC LIMIT 50;";
 		
 		singleTest(in, exp);
 	}
 
 	@Test (expected = MalformedParametersException.class)
 	public void testInvalidField() {
-		String in = "MODE=FROM-POPULATION=pop-COLNAMES=col-ANFIELD=bad";
+		String in = "MODE=FROM-POPULATION=pop-COLEXP=col-ANFIELD=bad";
 		singleTest(in, null, true);
 	}
 
