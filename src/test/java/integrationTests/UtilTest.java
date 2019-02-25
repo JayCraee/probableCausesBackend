@@ -1,0 +1,48 @@
+package integrationTests;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import partib.groupProject.probableCauses.backend.ProbableCausesApplication;
+import partib.groupProject.probableCauses.backend.controller.QueryController;
+import partib.groupProject.probableCauses.backend.controller.UtilController;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(UtilController.class)
+@ContextConfiguration(classes = ProbableCausesApplication.class)
+public class UtilTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    public void testGetTables() throws Exception {
+        String uri = "/util/tableNames";
+        String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
+
+        assertEquals("[CRIMEDATA]", result, "Oh no: "); // TODO complete this
+    }
+
+    @Test
+    public void testGetColumns() throws Exception {
+        String uri = "/util/columnNames/CRIMEDATA";
+        String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
+
+        assertEquals("[ID, ...]", result, "Oh no: "); // TODO complete this
+    }
+
+    @Test
+    public void testGetNominalColumns() throws Exception {
+        String uri = "/util/nominalColumnNames/CRIMEDATA";
+        String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
+
+        assertEquals("[ID, ...]", result, "Oh no: "); // TODO complete this
+    }
+}
