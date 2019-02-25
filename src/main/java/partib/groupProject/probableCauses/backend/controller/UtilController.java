@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.json.*;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -16,51 +15,71 @@ import static partib.groupProject.probableCauses.backend.controller.ServerConnec
 @RequestMapping("/util")
 public class UtilController {
     @GetMapping("/tableNames")
-    public static String getTableName() throws InvalidCallException {
-        return singleQueryCaller("foo.bdb", "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+    public static String getTableNames() throws InvalidCallException { // TODO Test this
+        return singleQueryCaller(QueryController.db, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
     }
 
+    // Gets names of all columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/columnNames/{tableName}")
-    public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException {
-        String row = singleQueryCaller("foo.bdb", "SELECT * FROM " + tableName + " LIMIT 1");
+    public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
+        // Grab one row
+        String row = singleQueryCaller(QueryController.db, "SELECT * FROM " + tableName + " LIMIT 1");
+        // Extract list of column names from json result
         JsonReader jsonReader = Json.createReader(new StringReader(row));
         JsonArray jsonArray = jsonReader.readArray();
         jsonReader.close();
-
         ArrayList<String> columnList = new ArrayList<>();
         for(Object key : jsonArray.getJsonArray(0).getJsonObject(0).keySet()) {
             columnList.add((String) key);
         }
-
-        String statTypes = singleQueryCaller("foo.bdb", "GUESS SCHEMA FOR " + tableName);
-        jsonReader = Json.createReader(new StringReader(statTypes));
-        jsonArray = jsonReader.readArray();
-        jsonReader.close();
-
-        ArrayList<String> statList = new ArrayList<>();
-        for(int i = 0; i < jsonArray.getJsonArray(0).size(); i++) {
-            statList.add(jsonArray.getJsonArray(0).getJsonObject(i).get("stattype").toString());
-        }
-
+        // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
-            json += "{\"columnName\": \"" + columnList.get(i) + "\", \"stattype\": \"" + statList.get(i) + "\"}";
+            json += columnList.get(i);
             if (i+1 < columnList.size()) {
                 json += ", ";
             }
         }
-
         return json + "]";
     }
 
-    // for testing purposes
-    @GetMapping("/anyQuery/{query}")
-    public static String runAnyQuery(@PathVariable String query) throws InvalidCallException {
-        return singleQueryCaller("foo.bdb", query);
+    // Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
+    @GetMapping("/nominalColumnNames/{tableName}")
+    public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
+        // Grab schema
+        String statTypes = singleQueryCaller(QueryController.db, "GUESS SCHEMA FOR " + tableName);
+        // Extract nominal column names from json result
+        JsonReader jsonReader = Json.createReader(new StringReader(statTypes));
+        JsonArray jsonArray = jsonReader.readArray();
+        jsonReader.close();
+
+        ArrayList<String> columnList = new ArrayList<>();
+        for (int i=0; i<jsonArray.getJsonArray(0).size(); i++) {
+            JsonObject column = jsonArray.getJsonArray(0).getJsonObject(0);
+            String columnName = column.getString("column");
+            String statType = column.getString("stattype");
+            if (statType.equals("nominal")) {
+                columnList.add(columnName);
+            }
+        }
+        // Construct and return json output
+        String json = "[";
+        for(int i=0; i<columnList.size(); i++) {
+            json += columnList.get(i);
+            if (i+1 < columnList.size()) {
+                json += ", ";
+            }
+        }
+        return json + "]";
     }
 
-    public static String getDimensions(String stringJson) {
+    // For testing purposes only
+    @GetMapping("/anyQuery/{query}")
+    public static String runAnyQuery(@PathVariable String query) throws InvalidCallException {
+        return singleQueryCaller(QueryController.db, query);
+    }
 
+    public static String getDimensions(String stringJson) { // TODO Implement this ? Scrap this ?
         return null;
     }
 

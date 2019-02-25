@@ -14,7 +14,7 @@ import partib.groupProject.probableCauses.backend.model.bql.query.Simulate;
 @RestController
 @RequestMapping("/bql/query")
 public class QueryController {
-    private final String db = "crime.bdb";
+    public static final String db = "crime.bdb";
     private final Logger log = LoggerFactory.getLogger(QueryController.class);
 
     @GetMapping("/estimate/{unparsed}")
@@ -43,10 +43,5 @@ public class QueryController {
         System.out.println(unparsed);
         Select query = new Select(unparsed);
         return ServerConnector.queryCaller(db, query.getBQL());
-    }
-
-    @GetMapping("/selectTest/{parsed}")
-    String getSelectTest(@PathVariable String parsed) throws InvalidCallException {
-        return ServerConnector.singleQueryCaller(db, "SELECT * FROM sys.tables");
     }
 }
