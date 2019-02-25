@@ -51,7 +51,6 @@ public class SelectTest {
 
 	@Test (expected = MalformedParametersException.class)
 	public void testNoTable() {
-	//TODO: This will currently definitely fail. However, otherwise the BQL generator allows INFER EXPLICITs without column names which is a terrible idea.
 	
 		String in = "COLNAMES=col"; 
 		singleTest(in, null, true);
@@ -100,8 +99,8 @@ public class SelectTest {
 	@Test
 	public void testLimit() {
 	
-		String in = "COLNAMES=col-TABLE=tab-LIMIT=50";
-		String exp = "SELECT COL FROM TAB LIMIT 50;";
+		String in = "COLNAMES=col-TABLE=tab-LIMIT=100";
+		String exp = "SELECT COL FROM TAB LIMIT 100;";
 		
 		singleTest(in, exp);
 	

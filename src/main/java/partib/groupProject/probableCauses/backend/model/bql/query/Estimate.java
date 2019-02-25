@@ -5,46 +5,61 @@ import java.util.*;
 
 
 public class Estimate extends Query {
-    private final Map<String, String> metaData;
 
-    private static final ArrayList<String> modeOptions =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"BY","FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE"}));
+    private static final List<String> modeOptions =
+            Arrays.asList("BY", "FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE");
 
-    private static final ArrayList<String> compulsoryFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"MODE", "EXPRESSION", "EXPNAME", "POPULATION"}));
+    private static final List<String> compulsoryFields =
+            Arrays.asList("MODE", "EXPRESSION", "EXPNAME", "POPULATION");
 
-    private static final ArrayList<String> optionalFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"WHERE", "GROUP BY", "ORDER BY", "LIMIT"}));
+    private static final List<String> optionalFields =
+            Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT");
 
-    private static final ArrayList<String> innerFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"WHERE", "GROUP BY"}));
+    private static final List<String> innerFields =
+            Arrays.asList("WHERE", "GROUP BY");
 
     public Estimate(String unparsed) throws MalformedParametersException {
         super(unparsed);
-        metaData = new HashMap<>();
 
-        //sanity check on inputs
+        // Check for missing compulsory fields
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
+        // TODO what does this bit check for exactly? Please add a comment
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
-
-        //clean up expressions
-        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
-
+        // Check MODE is valid
         parsedInputs.put("MODE", parsedInputs.get("MODE").replace("_", " "));
         if (!modeOptions.contains(super.parsedInputs.get("MODE"))) {
-            throw new MalformedParametersException("Error: Mode not supplied");
+            throw new MalformedParametersException("Error: Invalid mode supplied");
+        }
+        // Clean up expressions
+        parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
+
+        //Check that we don't have superfluous fields given the MODE option.
+        List<String> disallowedFields;
+        switch (super.parsedInputs.get("MODE")) {
+            case "BY":
+                disallowedFields = Arrays.asList("WHERE", "GROUP BY", "ORDER BY");
+                break;
+            case "FROM PAIRWISE":
+                disallowedFields = Arrays.asList("GROUP BY");
+                break;
+            case "FROM PAIRWISE VARIABLES OF":
+                disallowedFields = Arrays.asList("GROUP BY");
+                break;
+            default:
+                disallowedFields = new ArrayList<>();
+        }
+        for (String k : disallowedFields) {
+            if (super.fields.contains(k)) {
+                throw new MalformedParametersException("Error: field <"+k+"> is not allowed with the <"+super.parsedInputs.get("MODE")+"> mode");
+            }
         }
     }
 
@@ -99,17 +114,5 @@ public class Estimate extends Query {
         }
         ret.add(ss);
         return ret;
-    }
-
-    public static void main(String[] args) {
-        String input =
-                "MODE=BY" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
-                "-POPULATION=pop" +
-                "-LIMIT=1000";
-        Estimate targest = new Estimate(input);
-        System.out.println(targest.getBQL());
-        System.out.println(targest.getParsedInputs());
     }
 }

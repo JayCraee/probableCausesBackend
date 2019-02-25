@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.HashMap;
 
 public class Infer extends Query {
-	private static final ArrayList<String> compulsoryFields =
-	        new ArrayList<>(Arrays.asList("MODE", "POPULATION", "COLEXP"));
+	private static final List<String> compulsoryFields = Arrays.asList("MODE", "POPULATION", "COLEXP");
 	
 	private static final List<String> earlyOptionalFields = Arrays.asList("WITH CONFIDENCE");
 
@@ -18,37 +17,30 @@ public class Infer extends Query {
 	
 	@Override
 	public List<String> getBQL() {
-		HashMap<String, String> cleanInputs = new HashMap();
+		// Clean inputs
+		HashMap<String, String> cleanInputs = new HashMap<>(); // TODO currently broken- not stripping out _s, so string comparisons fail later
 		for(String field : super.parsedInputs.keySet()){
 			String value = parsedInputs.get(field);
 			cleanInputs.put(field, cleanExpression(value));
 		}
-		
-		String res = "INFER ";
-		
+		// Check MODE is valid
 		if(!modeOptions.contains(cleanInputs.get("MODE")))
 			throw new MalformedParametersException("Invalid Mode: " + cleanInputs.get("MODE"));
 
-		boolean expl = cleanInputs.get("MODE").equals("EXPLICIT FROM");
-
-
-		if(expl){
-
+		String res = "INFER ";
+		if(cleanInputs.get("MODE").equals("EXPLICIT FROM")){
 			res += "EXPLICIT";
 			res += " " + cleanInputs.get("COLEXP") + " ";
-
-			if(cleanInputs.containsKey("WITH CONFIDENCE"))
+			// Check haven't put WITH CONFIDENCE when it's not allowed
+			if(cleanInputs.containsKey("WITH CONFIDENCE")) {
 				throw new MalformedParametersException("Mode " + cleanInputs.get("MODE") + " not supported with field 'WITH CONFIDENCE'!");
-
+			}
 		} else {
-
 			res += " " + cleanInputs.get("COLEXP") + " ";
 			if(!cleanInputs.keySet().contains("WITH CONFIDENCE"))
 				cleanInputs.put("WITH CONFIDENCE", "0.7");
 			res += "WITH CONFIDENCE " + cleanInputs.get("WITH CONFIDENCE");
-
 		}
-
 
 		res += " FROM " + cleanInputs.get("POPULATION");
 
@@ -61,28 +53,22 @@ public class Infer extends Query {
 			}
 		}
 
-		return Arrays.asList(res + ";");
+		return Arrays.asList(res);
 	}
 	
 	public Infer(String unparsed) {
 		super(unparsed);
-
-		//sanity check on inputs
+		// Check for missing compulsory fields TODO Consider putting this in a function of Query
 		for (String k : compulsoryFields) {
 			if (!super.fields.contains(k)) {
 				throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
 			}
 		}
+		// TODO what does this bit check for exactly? Please add a comment
 		for (String k : super.fields) {
 			if (!compulsoryFields.contains(k) && !optionalFields.contains(k) && !earlyOptionalFields.contains(k)) {
 				throw new MalformedParametersException("Error: Query field <"+k+"> not present");
 			}
 		}
-	}
-
-	public static void main(String[] args) {
-		Infer targinf = new Infer("EXPRESSION=col1-MODE=EXPLICIT!FROM-POPULATION=hell_data");
-		//Infer targinf = new Infer("COLEXP=col1-MODE=FROM-POPULATION=hell_data");
-		System.out.println(targinf.getBQL());
 	}
 }

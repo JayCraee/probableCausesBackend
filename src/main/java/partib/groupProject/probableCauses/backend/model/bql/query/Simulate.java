@@ -6,22 +6,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Simulate extends Query {
-    private static final ArrayList<String> compulsoryFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"COLNAMES", "POPULATION"}));
+    private static final List<String> compulsoryFields =
+            Arrays.asList("COLNAMES", "POPULATION");
 
-    private static final ArrayList<String> optionalFields =
-            new ArrayList<>(Arrays.asList(
-                    new String[]{"GIVEN", "LIMIT1", "LIMIT2"}));
+    private static final List<String> optionalFields =
+            Arrays.asList("GIVEN", "LIMIT1", "LIMIT2");
 
     public Simulate(String unparsed) {
         super(unparsed);
-        //sanity check on inputs
+        // Check for missing compulsory fields
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
+        // TODO what does this bit check for exactly? Please add a comment
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
@@ -56,10 +55,5 @@ public class Simulate extends Query {
         }
         ret.add(ss);
         return ret;
-    }
-
-    public static void main(String[] args) {
-        Simulate targsim = new Simulate("COLNAMES=col1,col2-POPULATION=AFRICA_ACCIDENT-LIMIT1=4000-LIMIT2=40-GIVEN=cont");
-        System.out.println(targsim.getBQL());
     }
 }

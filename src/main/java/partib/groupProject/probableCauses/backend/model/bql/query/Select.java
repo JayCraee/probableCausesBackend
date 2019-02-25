@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Select extends Query {
-	private static final ArrayList<String> compulsoryFields =
-		new ArrayList<>(Arrays.asList("COLNAMES", "TABLE"));
+	private static final List<String> compulsoryFields =
+			Arrays.asList("COLNAMES", "TABLE");
 	
-	private static final ArrayList<String> optionalFields =
-		new ArrayList<>(Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT"));
+	private static final List<String> optionalFields =
+			Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT");
 	
 	public Select(String unparsed) throws MalformedParametersException{
 		super(unparsed);
@@ -53,6 +53,6 @@ public class Select extends Query {
 			}
 		}
 
-		return Arrays.asList(res + ";");
+		return Arrays.asList(res);
 	}
 }
