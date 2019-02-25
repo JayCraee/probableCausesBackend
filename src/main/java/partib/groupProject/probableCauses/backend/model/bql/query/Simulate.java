@@ -20,11 +20,9 @@ public class Simulate extends Query {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
-        // TODO what does this bit check for exactly? Please add a comment
         // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
-                System.out.println("\n\n\n\n\n\n\n\n\n\n CAUGHT BAD FIELD IN CONSTRUCTOR \n\n\n\n\n\n\n\n\n");
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
