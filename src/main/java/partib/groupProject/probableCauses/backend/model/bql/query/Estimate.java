@@ -28,6 +28,7 @@ public class Estimate extends Query {
             }
         }
         // TODO what does this bit check for exactly? Please add a comment
+        // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
@@ -72,6 +73,7 @@ public class Estimate extends Query {
                 ss += "SELECT * FROM ( ";
                 ss += "ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
+                ss += " AS " + parsedInputs.get("EXPNAME");
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 ss += " ) ";
@@ -113,6 +115,7 @@ public class Estimate extends Query {
             }
         }
         ret.add(ss);
+        System.out.println(ss);
         return ret;
     }
 }

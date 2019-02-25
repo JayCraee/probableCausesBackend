@@ -29,7 +29,7 @@ public class EstimateTest {
                 start +
                 "/MODE=BY" +
                 "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
-                "-EXPNAME=Correlation" +
+                "-EXPNAME=Correlation" + //dks28 : This was failing because Estimate.java didn't add AS EXPNAME for MODE=BY.
                 "-POPULATION=CRIMEDATA";
         List<String> expectedColumnNames = Arrays.asList("Correlation");
         int expectedNumberOfRows = 1;
@@ -39,7 +39,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError1() throws Exception {
-        String input =
+        String input = start + // dks28 : This was failing because the `start + ` was missing.
                 "MODE=BY" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
@@ -50,7 +50,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError2() throws Exception {
-        String input =
+        String input = start + // dks28 : This was failing because the `start + ` was missing.
                 "MODE=BY" +
                 "-EXPRESSION=exp1" +
                 "-EXPNAME=col" +
@@ -61,7 +61,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError3() throws Exception {
-        String input =
+        String input = start + // dks28 : This was failing because the `start + ` was missing.
                 "MODE=BY" +
                 "-EXPRESSION=exp1" +
                 "-EXPNAME=col" +
@@ -76,9 +76,9 @@ public class EstimateTest {
                 start +
                 "/MODE=FROM" +
                 "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
-                "-EXPNAME=correlation" +
+                "-EXPNAME=Correlation" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("correlation");
+        List<String> expectedColumnNames = Arrays.asList("Correlation");
         int expectedNumberOfRows = 1;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -92,14 +92,14 @@ public class EstimateTest {
                 start +
                 "/MODE=FROM" +
                 "-EXPRESSION=ID,CaseNumber,Year" +
-                "-EXPNAME=col" +
+                "-EXPNAME=Year" +    // dks28 : It also failed because we were calling Year 'col'
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=Id<1000" +
+                "-WHERE=ID>1000" +  // dks28: This was failing because ID should have been capitalised, and because all IDs are A LOT larger than 1000.
                 "-GROUP_BY=Year" +
                 "-ORDER_BY=Year,ID" +
-                "-LIMIT=100";
+                "-LIMIT=100";       // dks28 : And because grouping by year meant that there were only ever going to be 10.
         List<String> expectedColumnNames = Arrays.asList("ID", "CaseNumber", "Year");
-        int expectedNumberOfRows = 100;
+        int expectedNumberOfRows = 10;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -159,9 +159,10 @@ public class EstimateTest {
                 "-EXPRESSION=MUTUAL!INFORMATION" +
                 "-EXPNAME=mutinf" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=Year=2000" +
+                "-WHERE=Year=2005" +
                 "-ORDER_BY=mutinf" +
                 "-LIMIT=5";
+        //TODO this fails because no rows are produced
         List<String> expectedColumnNames = Arrays.asList("mutinf", "population_id", "name0", "name1");
         int expectedNumberOfRows = 5;
 
@@ -183,12 +184,12 @@ public class EstimateTest {
 
     @Test
     public void testFROM_PAIRWISE() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM_PAIRWISE" +
-                "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF" +
+                "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" + // dks28: Previously it was just "In the context of" without further info.
                 "-EXPNAME=Similarity" +
                 "-POPULATION=CRIMEDATA";
-
+        // TODO: LIMIT is causing syntax errors somehow....
         List<String> expectedColumnNames = Arrays.asList("ID", "Similarity");
         int expectedNumberOfRows = 50;
 
@@ -197,15 +198,15 @@ public class EstimateTest {
 
     @Test
     public void testFROM_PAIRWISEOptionals() throws Exception {
-        String input =
+        String input = start + // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
                 "-EXPNAME=Similarity" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=Id<1000" +
+                "-WHERE=ID>1000" +    // dks28: Previously Id instead of ID and ID<1000
                 "-ORDER_BY=ID" +
                 "-LIMIT=100";
-
+        //TODO this fails with an empty BQLError...
         List<String> expectedColumnNames = Arrays.asList("ID", "Similarity");
         int expectedNumberOfRows = 100;
 
@@ -214,7 +215,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testFROM_PAIRWISEInvalidOptionalsError() throws Exception {
-        String input =
+        String input = start + // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
                 "-EXPNAME=Similarity" +
@@ -226,7 +227,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidModeError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=fake_mode" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
@@ -236,7 +237,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingModeError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
@@ -245,7 +246,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingExpressionError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
@@ -254,7 +255,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingExpNameError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM" +
                 "-EXPRESSION=exp" +
                 "-POPULATION=pop";
@@ -263,7 +264,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingPopulationError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col";
@@ -272,7 +273,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidFieldNameError() throws Exception {
-        String input =
+        String input = start +  // dks28 : This was failing because the `start + ` was missing.
                 "MODE=FROM" +
                         "-EXPRESSION=exp1" +
                         "-EXPNAME=col" +
