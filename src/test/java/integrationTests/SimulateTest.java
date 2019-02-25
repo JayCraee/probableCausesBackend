@@ -27,7 +27,7 @@ public class SimulateTest {
                 start +
                 "COLNAMES=Year,Arrest" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("Year-Arrest", "frequency");
+        List<String> expectedColumnNames = Arrays.asList("Year_Arrest", "frequency");
         int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -43,7 +43,7 @@ public class SimulateTest {
                 "-LIMIT1=10000" +
                 "-LIMIT2=100";
 
-        List<String> expectedColumnNames = Arrays.asList("Year-Arrest", "frequency");
+        List<String> expectedColumnNames = Arrays.asList("Year_Arrest", "frequency");
         int expectedNumberOfRows = 100;
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -66,7 +66,7 @@ public class SimulateTest {
                 start +
                 "COLNAMES=Year,Arrest,Domestic" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("Year-Arrest-Domestic", "frequency");
+        List<String> expectedColumnNames = Arrays.asList("Year_Arrest_Domestic", "frequency");
         int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -74,22 +74,22 @@ public class SimulateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingColNames() throws Exception {
-        String input = "-POPULATION=CRIMEDATA";
+        String input = start + "-POPULATION=CRIMEDATA";  // dks28 : This was failing because the `start + ` was missing.
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingPopulation() throws Exception {
-        String input = "COLNAMES=ID,Year";
+        String input = start + "COLNAMES=ID,Year";       // dks28 : This was failing because the `start + ` was missing.
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidFieldNameError() throws Exception {
-        String input =
+        String input = start +                           // dks28 : This was failing because the `start + ` was missing.
                 "COLNAMES=ID,Year" +
                 "-POPULATION=CRIMEDATA" +
-                "-fake_news=oh!no";
-        IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
+                "-FAKE_NEWS=oh!no";
+        IntegrationTestFramework.singleTest(input, Arrays.asList("ID"), 0, mockMvc, true);
     }
 }

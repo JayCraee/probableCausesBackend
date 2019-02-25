@@ -21,8 +21,10 @@ public class Simulate extends Query {
             }
         }
         // TODO what does this bit check for exactly? Please add a comment
+        // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
+                System.out.println("\n\n\n\n\n\n\n\n\n\n CAUGHT BAD FIELD IN CONSTRUCTOR \n\n\n\n\n\n\n\n\n");
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
             }
         }
@@ -33,9 +35,9 @@ public class Simulate extends Query {
         List<String> ret = new ArrayList<>();
         String ss = "SELECT ";
         String combinedColNames = String.join("||\"--\"||", parsedInputs.get("COLNAMES").split(","));
-        String newFieldName = String.join("-", parsedInputs.get("COLNAMES").split(","));
+        String newFieldName = String.join("_", parsedInputs.get("COLNAMES").split(",")); //TODO read: dks28 -- Changed Delimiter to underscore because dash is a syntax error.
         ss += combinedColNames;
-        ss += " AS " + newFieldName + " COUNT(" + newFieldName + ") AS frequency FROM (";
+        ss += " AS " + newFieldName + ", COUNT(" + newFieldName + ") AS frequency FROM (";              //TODO read: dks28 -- Added Comma. How did this get through unit tests?
         ss += " SIMULATE " + parsedInputs.get("COLNAMES");
         ss += " FROM " + parsedInputs.get("POPULATION");
         if (super.fields.contains("GIVEN")) {
@@ -53,6 +55,7 @@ public class Simulate extends Query {
         } else {
             ss += " LIMIT 50";
         }
+        System.out.println(ss);
         ret.add(ss);
         return ret;
     }
