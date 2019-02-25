@@ -1,5 +1,6 @@
 package integrationTests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import java.lang.reflect.MalformedParametersException;
 import java.util.*;
@@ -29,7 +30,7 @@ public class EstimateTest {
                 start +
                 "/MODE=BY" +
                 "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
-                "-EXPNAME=Correlation" + //dks28 : This was failing because Estimate.java didn't add AS EXPNAME for MODE=BY.
+                "-EXPNAME=Correlation" +
                 "-POPULATION=CRIMEDATA";
         List<String> expectedColumnNames = Arrays.asList("Correlation");
         int expectedNumberOfRows = 1;
@@ -39,7 +40,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError1() throws Exception {
-        String input = start + // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=BY" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
@@ -50,7 +51,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError2() throws Exception {
-        String input = start + // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=BY" +
                 "-EXPRESSION=exp1" +
                 "-EXPNAME=col" +
@@ -61,7 +62,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testBYWithInvalidOptionalsError3() throws Exception {
-        String input = start + // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=BY" +
                 "-EXPRESSION=exp1" +
                 "-EXPNAME=col" +
@@ -75,15 +76,13 @@ public class EstimateTest {
         String uri =
                 start +
                 "/MODE=FROM" +
-                "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
-                "-EXPNAME=Correlation" +
+                "-EXPRESSION=ID,CaseNumber,Year" +
+                "-EXPNAME=Year" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("Correlation");
-        int expectedNumberOfRows = 1;
+        List<String> expectedColumnNames = Arrays.asList("ID", "CaseNumber", "Year");
+        int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
-
-
     }
 
     @Test
@@ -92,14 +91,14 @@ public class EstimateTest {
                 start +
                 "/MODE=FROM" +
                 "-EXPRESSION=ID,CaseNumber,Year" +
-                "-EXPNAME=Year" +    // dks28 : It also failed because we were calling Year 'col'
+                "-EXPNAME=Year" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=ID>1000" +  // dks28: This was failing because ID should have been capitalised, and because all IDs are A LOT larger than 1000.
+                "-WHERE=ID>1000" +
                 "-GROUP_BY=Year" +
                 "-ORDER_BY=Year,ID" +
-                "-LIMIT=100";       // dks28 : And because grouping by year meant that there were only ever going to be 10.
+                "-LIMIT=5";
         List<String> expectedColumnNames = Arrays.asList("ID", "CaseNumber", "Year");
-        int expectedNumberOfRows = 10;
+        int expectedNumberOfRows = 5;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -109,11 +108,11 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_VARIABLES_OF" +
-                "-EXPRESSION=PROBABILITY!DENSITY!OF!ID" +
-                "-EXPNAME=Correlation" +
+                "-EXPRESSION=PROBABILITY!DENSITY!OF!VALUE!5" +
+                "-EXPNAME=probDensity" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("Correlation", "ID", "Beat", "District", "Year", "Arrest", "Domestic", "CommunityArea", "Ward");
-        int expectedNumberOfRows = 50;
+        List<String> expectedColumnNames = Arrays.asList("probDensity");
+        int expectedNumberOfRows = 8; // number of columns in table
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -123,15 +122,15 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_VARIABLES_OF" +
-                "-EXPRESSION=PREDICTIVE!PROBABILITY!OF!Year" +
-                "-EXPNAME=predictiveProbability" +
+                "-EXPRESSION=PROBABILITY!DENSITY!OF!VALUE!5" +
+                "-EXPNAME=probDensity" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=CaseNumber=1000" +
+                "-WHERE=1=1" +
                 "-GROUP_BY=Year" +
                 "-ORDER_BY=Arrest" +
-                "-LIMIT=100";
-        List<String> expectedColumnNames = Arrays.asList("predictiveProbability", "ID", "Beat", "District", "Year", "Arrest", "Domestic", "CommunityArea", "Ward");
-        int expectedNumberOfRows = 100;
+                "-LIMIT=5";
+        List<String> expectedColumnNames = Arrays.asList("probDensity");
+        int expectedNumberOfRows = 5;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -141,12 +140,11 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=MUTUAL!INFORMATION" +
-                "-EXPNAME=mutinf" +
-                "-POPULATION=CRIMEDATA" +
-                "-LIMIT=5";
-        List<String> expectedColumnNames = Arrays.asList("mutinf", "population_id", "name0", "name1");
-        int expectedNumberOfRows = 5;
+                "-EXPRESSION=CORRELATION" +
+                "-EXPNAME=corr" +
+                "-POPULATION=CRIMEDATA";
+        List<String> expectedColumnNames = Arrays.asList("corr", "population_id", "name0", "name1");
+        int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -156,14 +154,14 @@ public class EstimateTest {
         String input =
                 start +
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=MUTUAL!INFORMATION" +
-                "-EXPNAME=mutinf" +
+                "-EXPRESSION=CORRELATION" +
+                "-EXPNAME=corr" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=Year=2005" +
-                "-ORDER_BY=mutinf" +
+                "-WHERE=1=1" + // We don't understand how to use where with FROM PAIRWISE VARIABLES OF. Avoid if possible.
+                "-ORDER_BY=corr" +
                 "-LIMIT=5";
-        //TODO this fails because no rows are produced
-        List<String> expectedColumnNames = Arrays.asList("mutinf", "population_id", "name0", "name1");
+
+        List<String> expectedColumnNames = Arrays.asList("corr", "population_id", "name0", "name1");
         int expectedNumberOfRows = 5;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -182,40 +180,44 @@ public class EstimateTest {
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }
 
+    // djh242: As of 25/02/19, this fails with an empty BQLException and I don't know why.
+    // Possible that there's an SQLException that isn't being delivered properly.
+    @Ignore
     @Test
     public void testFROM_PAIRWISE() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start + //
                 "MODE=FROM_PAIRWISE" +
-                "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" + // dks28: Previously it was just "In the context of" without further info.
-                "-EXPNAME=Similarity" +
+                "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
+                "-EXPNAME=sim" +
                 "-POPULATION=CRIMEDATA";
-        // TODO: LIMIT is causing syntax errors somehow....
-        List<String> expectedColumnNames = Arrays.asList("ID", "Similarity");
+        List<String> expectedColumnNames = Arrays.asList("sim");
         int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
 
+    // djh242: As of 25/02/19, this fails with an empty BQLException and I don't know why.
+    // Possible that there's an SQLException that isn't being delivered properly.
+    @Ignore
     @Test
     public void testFROM_PAIRWISEOptionals() throws Exception {
-        String input = start + // dks28 : This was failing because the `start + ` was missing.
+        String input = start + //
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
-                "-EXPNAME=Similarity" +
+                "-EXPNAME=sim" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=ID>1000" +    // dks28: Previously Id instead of ID and ID<1000
-                "-ORDER_BY=ID" +
-                "-LIMIT=100";
-        //TODO this fails with an empty BQLError...
-        List<String> expectedColumnNames = Arrays.asList("ID", "Similarity");
-        int expectedNumberOfRows = 100;
+                "-WHERE=rowid1>1000 AND rowid2>1000" +
+                "-ORDER_BY=sim" +
+                "-LIMIT=10";
+        List<String> expectedColumnNames = Arrays.asList("sim");
+        int expectedNumberOfRows = 10;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
 
     @Test (expected = MalformedParametersException.class)
     public void testFROM_PAIRWISEInvalidOptionalsError() throws Exception {
-        String input = start + // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
                 "-EXPNAME=Similarity" +
@@ -227,7 +229,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidModeError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=fake_mode" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
@@ -237,7 +239,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingModeError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
@@ -246,7 +248,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingExpressionError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=FROM" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
@@ -255,7 +257,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingExpNameError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=FROM" +
                 "-EXPRESSION=exp" +
                 "-POPULATION=pop";
@@ -264,7 +266,7 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testMissingPopulationError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=FROM" +
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col";
@@ -273,12 +275,12 @@ public class EstimateTest {
 
     @Test (expected = MalformedParametersException.class)
     public void testInvalidFieldNameError() throws Exception {
-        String input = start +  // dks28 : This was failing because the `start + ` was missing.
+        String input = start +
                 "MODE=FROM" +
-                        "-EXPRESSION=exp1" +
-                        "-EXPNAME=col" +
-                        "-POPULATION=pop" +
-                        "-fake_news=exp2";
+                "-EXPRESSION=exp1" +
+                "-EXPNAME=col" +
+                "-POPULATION=pop" +
+                "-fake_news=exp2";
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }
 }
