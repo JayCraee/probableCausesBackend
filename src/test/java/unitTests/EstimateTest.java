@@ -49,7 +49,7 @@ public class EstimateTest {
                 "-EXPRESSION=exp" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp BY pop) LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS COL BY pop) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -58,7 +58,7 @@ public class EstimateTest {
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp BY pop) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE exp AS col BY pop) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 

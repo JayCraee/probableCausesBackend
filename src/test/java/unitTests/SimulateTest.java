@@ -47,7 +47,7 @@ public class SimulateTest {
         String input =
                 "COLNAMES=col1,col2" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT col1||\"--\"||col2 as col1-col2 COUNT(col1-col2) AS frequency FROM (SIMULATE col1,col2 FROM pop LIMIT 5000) GROUP BY col1-col2 ORDER BY frequency DESC LIMIT 50";
+        String expectedOutput = "SELECT col1||\"--\"||col2 as col1_col2, COUNT(col1_col2) AS frequency FROM (SIMULATE col1,col2 FROM pop LIMIT 5000) GROUP BY col1_col2 ORDER BY frequency DESC LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -56,7 +56,7 @@ public class SimulateTest {
                 "-GIVEN=exp1" +
                 "-LIMIT1=10000" +
                 "-LIMIT2=100";
-        expectedOutput = "SELECT col1||\"--\"||col2 as col1-col2 COUNT(col1-col2) AS frequency FROM (SIMULATE col1,col2 FROM pop GIVEN exp1 LIMIT 10000) GROUP BY col1-col2 ORDER BY frequency DESC LIMIT 100";
+        expectedOutput = "SELECT col1||\"--\"||col2 as col1_col2, COUNT(col1_col2) AS frequency FROM (SIMULATE col1,col2 FROM pop GIVEN exp1 LIMIT 10000) GROUP BY col1_col2 ORDER BY frequency DESC LIMIT 100";
         singleTest(input, expectedOutput);
     }
 
@@ -65,13 +65,13 @@ public class SimulateTest {
         String input = // 1 column
                 "COLNAMES=col" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT col as col COUNT(col) AS frequency FROM (SIMULATE col FROM pop LIMIT 5000) GROUP BY col ORDER BY frequency DESC LIMIT 50";
+        String expectedOutput = "SELECT col as col, COUNT(col) AS frequency FROM (SIMULATE col FROM pop LIMIT 5000) GROUP BY col ORDER BY frequency DESC LIMIT 50";
         singleTest(input, expectedOutput);
 
         input = // 3 columns
                 "COLNAMES=col1,col2,col3" +
                 "-POPULATION=pop";
-        expectedOutput = "SELECT col1||\"--\"||col2||\"--\"||col3 as col1-col2-col3 COUNT(col1-col2-col3) AS frequency FROM (SIMULATE col1,col2,col3 FROM pop LIMIT 5000) GROUP BY col1-col2-col3 ORDER BY frequency DESC LIMIT 50";
+        expectedOutput = "SELECT col1||\"--\"||col2||\"--\"||col3 as col1_col2_col3, COUNT(col1_col2_col3) AS frequency FROM (SIMULATE col1,col2,col3 FROM pop LIMIT 5000) GROUP BY col1_col2_col3 ORDER BY frequency DESC LIMIT 50";
         singleTest(input, expectedOutput);
     }
 
