@@ -14,12 +14,13 @@ public class Simulate extends Query {
 
     public Simulate(String unparsed) {
         super(unparsed);
-        //sanity check on inputs
+        // Check for missing compulsory fields
         for (String k : compulsoryFields) {
             if (!super.fields.contains(k)) {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
+        // TODO what does this bit check for exactly? Please add a comment
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
@@ -54,10 +55,5 @@ public class Simulate extends Query {
         }
         ret.add(ss);
         return ret;
-    }
-
-    public static void main(String[] args) {
-        Simulate targsim = new Simulate("COLNAMES=col1,col2-POPULATION=AFRICA_ACCIDENT-LIMIT1=4000-LIMIT2=40-GIVEN=cont");
-        System.out.println(targsim.getBQL());
     }
 }
