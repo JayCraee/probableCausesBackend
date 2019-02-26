@@ -52,16 +52,16 @@ public class Estimate extends Query {
         else throw new MalformedParametersException("Cannot estimate " + parsedInputs.get("EXPRESSION"));
 
         //Check that we don't have superfluous fields given the MODE option.
-        List<String> disallowedFields;
+        ArrayList<String> disallowedFields;
         switch (super.parsedInputs.get("MODE")) {
             case "BY":
-                disallowedFields = Arrays.asList("WHERE", "GROUP BY", "ORDER BY");
+                disallowedFields = new ArrayList<>(Arrays.asList("WHERE", "GROUP BY", "ORDER BY"));
                 break;
             case "FROM PAIRWISE":
-                disallowedFields = Arrays.asList("GROUP BY");
+                disallowedFields = new ArrayList(Arrays.asList("GROUP BY"));
                 break;
             case "FROM PAIRWISE VARIABLES OF":
-                disallowedFields = Arrays.asList("GROUP BY");
+                disallowedFields = new ArrayList(Arrays.asList("GROUP BY"));
                 break;
             default:
                 disallowedFields = new ArrayList<>();
@@ -115,7 +115,7 @@ public class Estimate extends Query {
                 if (super.fields.contains("ORDER BY")) {
                     ss += " ORDER BY " + super.parsedInputs.get("ORDER BY");
                 } else {
-                    ss += " ORDER BY " + super.parsedInputs.get("EXPNAME");
+                    ss += (parsedInputs.containsKey("EXPNAME")) ? " ORDER BY " + super.parsedInputs.get("EXPNAME") : "";
                 }
                 if (super.fields.contains("LIMIT")) {
                     ss += " LIMIT " + super.parsedInputs.get("LIMIT");
