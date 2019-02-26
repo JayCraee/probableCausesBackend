@@ -8,20 +8,37 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.json.*;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static partib.groupProject.probableCauses.backend.controller.ServerConnector.singleQueryCaller;
 
 @RestController
 @RequestMapping("/util")
 public class UtilController {
+    // Gets names of all available tables, returns in format ["table1", "table2", ...]
     @GetMapping("/tableNames")
-    public static String getTableNames() throws InvalidCallException { // TODO Test this
-        return singleQueryCaller(QueryController.db, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+    public static String getTableNames() throws InvalidCallException {
+        String queryResult = singleQueryCaller(QueryController.db,
+                "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+        System.out.println(queryResult);
+        JsonReader jsonReader = Json.createReader(new StringReader(queryResult));
+        JsonArray jsonArray = jsonReader.readArray();
+        jsonReader.close();
+
+        ArrayList<String> tableNames = new ArrayList<>();
+        JsonArray names = jsonArray.getJsonArray(0);
+        for (int i=0; i<names.size(); i++) {
+            String name = names.getJsonObject(i).getString("name");
+            if ( !(name.startsWith("bayesdb_") || name.startsWith("sqlite_")) ) {
+                tableNames.add("\""+name+"\"");
+            }
+        }
+        return "["+tableNames.stream().map(Object::toString).collect(Collectors.joining(", "))+"]";
     }
 
     // Gets names of all columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/columnNames/{tableName}")
-    public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
+    public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException {
         // Grab one row
         String row = singleQueryCaller(QueryController.db, "SELECT * FROM " + tableName + " LIMIT 1");
         // Extract list of column names from json result
@@ -35,7 +52,7 @@ public class UtilController {
         // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
-            json += columnList.get(i);
+            json += "\""+columnList.get(i)+"\"";
             if (i+1 < columnList.size()) {
                 json += ", ";
             }
@@ -47,7 +64,7 @@ public class UtilController {
 
     // Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/nominalColumnNames/{tableName}")
-    public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
+    public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException {
         // Grab schema
         String statTypes = singleQueryCaller(QueryController.db, "GUESS SCHEMA FOR " + tableName);
         System.out.println(statTypes);
@@ -69,7 +86,7 @@ public class UtilController {
         // Construct and return json output
         String json = "[";
         for(int i=0; i<columnList.size(); i++) {
-            json += columnList.get(i);
+            json += "\""+columnList.get(i)+"\"";
             if (i+1 < columnList.size()) {
                 json += ", ";
             }

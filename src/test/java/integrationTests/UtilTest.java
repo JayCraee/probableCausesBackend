@@ -27,7 +27,7 @@ public class UtilTest {
         String uri = "/util/tableNames";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[CRIMEDATA]", result, "Oh no: "); // TODO complete this
+        assertEquals("[CRIMEDATA]", result, "Error: wrong table names");
     }
 
     @Test
