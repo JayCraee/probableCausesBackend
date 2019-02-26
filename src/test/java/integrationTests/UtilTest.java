@@ -27,7 +27,7 @@ public class UtilTest {
         String uri = "/util/tableNames";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[CRIMEDATA]", result, "Error: wrong table names");
+        assertEquals("[\"CRIMEDATA\"]", result, "Error: wrong table names");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class UtilTest {
         String uri = "/util/columnNames/CRIMEDATA";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[PrimaryType, District, LocationDescription, Arrest, Location, Latitude, CommunityArea, CaseNumber, Beat, Date, Ward, FBICode, YCoordinate, UpdatedOn, Longitude, ID, Block, Description, XCoordinate, Domestic, IUCR, Year]",
+        assertEquals("[\"PrimaryType\", \"District\", \"LocationDescription\", \"Arrest\", \"Location\", \"Latitude\", \"CommunityArea\", \"CaseNumber\", \"Beat\", \"Date\", \"Ward\", \"FBICode\", \"YCoordinate\", \"UpdatedOn\", \"Longitude\", \"ID\", \"Block\", \"Description\", \"XCoordinate\", \"Domestic\", \"IUCR\", \"Year\"]",
                 result, "Error: wrong columns returned");
     }
 
@@ -44,7 +44,7 @@ public class UtilTest {
         String uri = "/util/nominalColumnNames/CRIMEDATA";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[Date, Block, IUCR, PrimaryType, Description, LocationDescription, Arrest, Domestic, Beat, District, Ward, CommunityArea, FBICode, Year, UpdatedOn, Location]",
+        assertEquals("[\"Date\", \"Block\", \"IUCR\", \"PrimaryType\", \"Description\", \"LocationDescription\", \"Arrest\", \"Domestic\", \"Beat\", \"District\", \"Ward\", \"CommunityArea\", \"FBICode\", \"Year\", \"UpdatedOn\", \"Location\"]",
                 result, "Error: wrong columns returned");
     }
 }
