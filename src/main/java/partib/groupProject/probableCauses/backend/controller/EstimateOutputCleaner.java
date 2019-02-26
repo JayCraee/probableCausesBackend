@@ -39,10 +39,7 @@ public class EstimateOutputCleaner {
 						JsonArray jsonArray = jsonReader.readArray();
 						jsonReader.close();
 						ArrayList<String> correlations = new ArrayList();
-						System.out.println(data);
-						System.out.println(jsonArray.getJsonArray(0).toString());
 						for (int i = 0; i < jsonArray.getJsonArray(0).size(); i++) {
-							System.out.println(jsonArray.getJsonArray(0).getJsonObject(i).toString());
 							correlations.add(jsonArray.getJsonArray(0).getJsonObject(i).get("corr").toString());
 						}
 						// Construct and return json output
@@ -54,7 +51,6 @@ public class EstimateOutputCleaner {
 							}
 						}
 						json += "]]";
-						System.out.println("\n\n\n" + json + "\n\n\n");
 						break;
 					case "FROM PAIRWISE VARIABLES OF":
 						return data;
