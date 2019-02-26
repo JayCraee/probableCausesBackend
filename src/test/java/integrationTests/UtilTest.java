@@ -35,7 +35,8 @@ public class UtilTest {
         String uri = "/util/columnNames/CRIMEDATA";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[ID, ...]", result, "Oh no: "); // TODO complete this
+        assertEquals("[PrimaryType, District, LocationDescription, Arrest, Location, Latitude, CommunityArea, CaseNumber, Beat, Date, Ward, FBICode, YCoordinate, UpdatedOn, Longitude, ID, Block, Description, XCoordinate, Domestic, IUCR, Year]",
+                result, "Error: wrong columns returned");
     }
 
     @Test
@@ -43,6 +44,7 @@ public class UtilTest {
         String uri = "/util/nominalColumnNames/CRIMEDATA";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
-        assertEquals("[ID, ...]", result, "Oh no: "); // TODO complete this
+        assertEquals("[Date, Block, IUCR, PrimaryType, Description, LocationDescription, Arrest, Domestic, Beat, District, Ward, CommunityArea, FBICode, Year, UpdatedOn, Location]",
+                result, "Error: wrong columns returned");
     }
 }

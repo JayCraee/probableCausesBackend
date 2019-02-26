@@ -16,14 +16,12 @@ import static partib.groupProject.probableCauses.backend.controller.ServerConnec
 public class UtilController {
     @GetMapping("/tableNames")
     public static String getTableNames() throws InvalidCallException { // TODO Test this
-        System.out.println("RAWRRRRRR 1");
         return singleQueryCaller(QueryController.db, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
     }
 
     // Gets names of all columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/columnNames/{tableName}")
     public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
-        System.out.println("RAWRRRRRR 2");
         // Grab one row
         String row = singleQueryCaller(QueryController.db, "SELECT * FROM " + tableName + " LIMIT 1");
         // Extract list of column names from json result
@@ -50,9 +48,9 @@ public class UtilController {
     // Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/nominalColumnNames/{tableName}")
     public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException { // TODO Test this
-        System.out.println("RAWRRRRRR 3");
         // Grab schema
         String statTypes = singleQueryCaller(QueryController.db, "GUESS SCHEMA FOR " + tableName);
+        System.out.println(statTypes);
         // Extract nominal column names from json result
         JsonReader jsonReader = Json.createReader(new StringReader(statTypes));
         JsonArray jsonArray = jsonReader.readArray();
@@ -60,9 +58,10 @@ public class UtilController {
 
         ArrayList<String> columnList = new ArrayList<>();
         for (int i=0; i<jsonArray.getJsonArray(0).size(); i++) {
-            JsonObject column = jsonArray.getJsonArray(0).getJsonObject(0);
+            JsonObject column = jsonArray.getJsonArray(0).getJsonObject(i);
             String columnName = column.getString("column");
             String statType = column.getString("stattype");
+            System.out.println(columnName + " : " + statType);
             if (statType.equals("nominal")) {
                 columnList.add(columnName);
             }
