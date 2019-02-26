@@ -4,6 +4,10 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
 
+enum EstimateType{
+    CORRELATION
+}
+
 public class Estimate extends Query {
 
     private static final List<String> modeOptions =
@@ -81,7 +85,7 @@ public class Estimate extends Query {
                 if (super.fields.contains("LIMIT")) {
                     ss += "LIMIT " + parsedInputs.get("LIMIT");
                 } else {
-                    ss += "LIMIT 50";
+                    ss += "LIMIT 1000000";
                 }
                 break;
             }
@@ -110,7 +114,7 @@ public class Estimate extends Query {
                 if (super.fields.contains("LIMIT")) {
                     ss += " LIMIT " + super.parsedInputs.get("LIMIT");
                 } else {
-                    ss += " LIMIT 50";
+                    ss += " LIMIT 100000";
                 }
             }
         }
