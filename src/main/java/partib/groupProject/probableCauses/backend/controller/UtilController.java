@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.json.*;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static partib.groupProject.probableCauses.backend.controller.ServerConnector.singleQueryCaller;
@@ -64,16 +66,15 @@ public class UtilController {
 
     @GetMapping("/columnNamesPop/{populationName}")
     public static String getColumnNamesPopulation(@PathVariable String populationName) throws InvalidCallException {
-        // Grab one row
-        String row = singleQueryCaller(QueryController.db, "SELECT * FROM (SIMULATE * FROM " + populationName + " LIMIT 1) LIMIT 1");
-        // Extract list of column names from json result
-        JsonReader jsonReader = Json.createReader(new StringReader(row));
-        JsonArray jsonArray = jsonReader.readArray();
-        jsonReader.close();
-        ArrayList<String> columnList = new ArrayList<>();
-        for(Object key : jsonArray.getJsonArray(0).getJsonObject(0).keySet()) {
-            columnList.add((String) key);
+        // Grab the correlation between any two columns
+        String row = singleQueryCaller(QueryController.db, "SELECT * FROM (ESTIMATE CORRELATION FROM PAIRWISE VARIABLES OF " + populationName + ")");
+        ArrayList<String> tmp = new ArrayList<>(Arrays.asList(row.split("\"name0\": \"")));
+        tmp.remove(0);
+        ArrayList<String> columnList = new ArrayList();
+        for(String s : tmp){
+            if(!columnList.contains(s.split("\"")[0])) columnList.add(s.split("\"")[0]);
         }
+
         // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
