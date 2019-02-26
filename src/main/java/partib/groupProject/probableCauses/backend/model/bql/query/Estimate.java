@@ -5,19 +5,21 @@ import java.util.*;
 
 
 enum EstimateType{
-    CORRELATION
+    CORRELATION, SIMILARITY
 }
 
 public class Estimate extends Query {
+
+    public EstimateType type;
 
     private static final List<String> modeOptions =
             Arrays.asList("BY", "FROM", "FROM VARIABLES OF", "FROM PAIRWISE VARIABLES OF", "FROM PAIRWISE");
 
     private static final List<String> compulsoryFields =
-            Arrays.asList("MODE", "EXPRESSION", "EXPNAME", "POPULATION");
+            Arrays.asList("MODE", "EXPRESSION",  "POPULATION");
 
     private static final List<String> optionalFields =
-            Arrays.asList("WHERE", "GROUP BY", "ORDER BY", "LIMIT");
+            Arrays.asList("EXPNAME", "WHERE", "GROUP BY", "ORDER BY", "LIMIT");
 
     private static final List<String> innerFields =
             Arrays.asList("WHERE", "GROUP BY");
@@ -45,6 +47,9 @@ public class Estimate extends Query {
         }
         // Clean up expressions
         parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
+        if(parsedInputs.get("EXPRESSION").contains("CORRELATION")) type = EstimateType.CORRELATION;
+        else if(parsedInputs.get("EXPRESSION").contains("SIMILARITY")) type = EstimateType.SIMILARITY;
+        else throw new MalformedParametersException("Cannot estimate " + parsedInputs.get("EXPRESSION"));
 
         //Check that we don't have superfluous fields given the MODE option.
         List<String> disallowedFields;
@@ -61,9 +66,10 @@ public class Estimate extends Query {
             default:
                 disallowedFields = new ArrayList<>();
         }
+        if(type == EstimateType.SIMILARITY) disallowedFields.add("EXPNAME");
         for (String k : disallowedFields) {
             if (super.fields.contains(k)) {
-                throw new MalformedParametersException("Error: field <"+k+"> is not allowed with the <"+super.parsedInputs.get("MODE")+"> mode");
+                throw new MalformedParametersException("Error: field <"+k+"> is not allowed with the <"+super.parsedInputs.get("MODE")+"> mode and type " + type);
             }
         }
     }
@@ -77,7 +83,7 @@ public class Estimate extends Query {
                 ss += "SELECT * FROM ( ";
                 ss += "ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += " AS " + parsedInputs.get("EXPNAME");
+                ss += (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 ss += " ) ";
@@ -95,7 +101,7 @@ public class Estimate extends Query {
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += " AS " + parsedInputs.get("EXPNAME");
+                ss += (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 for (String opt : innerFields) {
@@ -121,5 +127,13 @@ public class Estimate extends Query {
         ret.add(ss);
         System.out.println(ss);
         return ret;
+    }
+
+    public String getMode(){
+        return parsedInputs.get("MODE");
+    }
+
+    public String getPopulation(){
+        return parsedInputs.get("POPULATION");
     }
 }

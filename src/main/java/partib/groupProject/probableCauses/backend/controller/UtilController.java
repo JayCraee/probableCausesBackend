@@ -62,6 +62,31 @@ public class UtilController {
         return json;
     }
 
+    @GetMapping("/columnNamesPop/{populationName}")
+    public static String getColumnNamesPopulation(@PathVariable String populationName) throws InvalidCallException {
+        // Grab one row
+        String row = singleQueryCaller(QueryController.db, "SELECT * FROM (SIMULATE * FROM " + populationName + " LIMIT 1) LIMIT 1");
+        // Extract list of column names from json result
+        JsonReader jsonReader = Json.createReader(new StringReader(row));
+        JsonArray jsonArray = jsonReader.readArray();
+        jsonReader.close();
+        ArrayList<String> columnList = new ArrayList<>();
+        for(Object key : jsonArray.getJsonArray(0).getJsonObject(0).keySet()) {
+            columnList.add((String) key);
+        }
+        // Construct and return json output
+        String json = "[";
+        for(int i = 0; i < columnList.size(); i++) {
+            json += "\""+columnList.get(i)+"\"";
+            if (i+1 < columnList.size()) {
+                json += ", ";
+            }
+        }
+        json += "]";
+
+        return json;
+    }
+
     // Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/nominalColumnNames/{tableName}")
     public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException {

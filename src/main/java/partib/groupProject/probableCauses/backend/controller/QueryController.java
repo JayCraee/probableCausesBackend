@@ -18,10 +18,11 @@ public class QueryController {
     private final Logger log = LoggerFactory.getLogger(QueryController.class);
 
     @GetMapping("/estimate/{unparsed}")
-    String getEstimate(@PathVariable String unparsed) throws InvalidCallException {
+    String getEstimate(@PathVariable String unparsed) throws Exception {
         System.out.println(unparsed);
         Estimate query = new Estimate(unparsed);
-        return ServerConnector.queryCaller(db, query.getBQL());
+        String data = ServerConnector.queryCaller(db, query.getBQL());
+        return EstimateOutputCleaner.process(data, query);
     }
 
     @GetMapping("/infer/{unparsed}")
