@@ -30,7 +30,7 @@ public class UtilController {
         for (int i=0; i<names.size(); i++) {
             String name = names.getJsonObject(i).getString("name");
             if ( !(name.startsWith("bayesdb_") || name.startsWith("sqlite_")) ) {
-                tableNames.add(name);
+                tableNames.add("\""+name+"\"");
             }
         }
         return "["+tableNames.stream().map(Object::toString).collect(Collectors.joining(", "))+"]";
@@ -52,7 +52,7 @@ public class UtilController {
         // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
-            json += columnList.get(i);
+            json += "\""+columnList.get(i)+"\"";
             if (i+1 < columnList.size()) {
                 json += ", ";
             }
@@ -86,7 +86,7 @@ public class UtilController {
         // Construct and return json output
         String json = "[";
         for(int i=0; i<columnList.size(); i++) {
-            json += columnList.get(i);
+            json += "\""+columnList.get(i)+"\"";
             if (i+1 < columnList.size()) {
                 json += ", ";
             }
