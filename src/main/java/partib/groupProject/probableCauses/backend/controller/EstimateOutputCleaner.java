@@ -1,25 +1,71 @@
 package partib.groupProject.probableCauses.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import partib.groupProject.probableCauses.backend.model.bql.query.Estimate;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
+import javax.json.*;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
+import static partib.groupProject.probableCauses.backend.controller.ServerConnector.singleQueryCaller;
 
 public class EstimateOutputCleaner {
 
-	@Autowired
-	private static MockMvc mockMvc;
 
 	public static String process(String data, Estimate query) throws Exception {
-		String uri = "/util/columnNamesPop/" + query.getPopulation();
-		String[] columns = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString().replaceAll("[|]", "").split(",");
 
-		String d;
+		String columns;
+		// Grab the correlation between any two columns
+		String row = singleQueryCaller(QueryController.db, "SELECT * FROM (ESTIMATE CORRELATION FROM PAIRWISE VARIABLES OF " + query.getPopulation() + ")");
+		ArrayList<String> tmp = new ArrayList<>(Arrays.asList(row.split("\"name0\": \"")));
+		tmp.remove(0);
+		ArrayList<String> columnList = new ArrayList();
+		for(String s : tmp){
+			if(!columnList.contains(s.split("\"")[0])) columnList.add(s.split("\"")[0]);
+		}
 
-		return null;
+		switch(query.type){
+
+			case CORRELATION:
+				switch (query.getMode()) {
+
+					case "BY":
+						String[] cols = query.getCols().split(",");
+						String corr = data.substring(3, data.length() - 3).split(":")[1];
+						return "[[{\"corr\":" + corr + ", \"name0\":\"" + cols[0] + "\", \"name1\":\"" + cols[1] + "\"}]]";
+					case "FROM VARIABLES OF":
+						JsonReader jsonReader = Json.createReader(new StringReader(data));
+						JsonArray jsonArray = jsonReader.readArray();
+						jsonReader.close();
+						ArrayList<String> correlations = new ArrayList();
+						System.out.println(data);
+						System.out.println(jsonArray.getJsonArray(0).toString());
+						for (int i = 0; i < jsonArray.getJsonArray(0).size(); i++) {
+							System.out.println(jsonArray.getJsonArray(0).getJsonObject(i).toString());
+							correlations.add(jsonArray.getJsonArray(0).getJsonObject(i).get("corr").toString());
+						}
+						// Construct and return json output
+						String json = "[[";
+						for(int i = 0; i < columnList.size(); i++) {
+							json += "{\"corr\":"+correlations.get(i)+", \"name0\":\"" + query.getCols().toLowerCase() + "\", \"name1\":\"" + columnList.get(i) + "\"}";
+							if (i+1 < columnList.size()) {
+								json += ", ";
+							}
+						}
+						json += "]]";
+						System.out.println("\n\n\n" + json + "\n\n\n");
+						break;
+					case "FROM PAIRWISE VARIABLES OF":
+						return data;
+				}
+				break;
+
+			case SIMILARITY:
+
+				break;
+		}
+
+		return data;
 	}
 }

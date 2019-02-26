@@ -4,10 +4,6 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
 
-enum EstimateType{
-    CORRELATION, SIMILARITY
-}
-
 public class Estimate extends Query {
 
     public EstimateType type;
@@ -101,7 +97,7 @@ public class Estimate extends Query {
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
+                ss += (type == EstimateType.CORRELATION) ? " AS corr " : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 for (String opt : innerFields) {
@@ -115,7 +111,7 @@ public class Estimate extends Query {
                 if (super.fields.contains("ORDER BY")) {
                     ss += " ORDER BY " + super.parsedInputs.get("ORDER BY");
                 } else {
-                    ss += (parsedInputs.containsKey("EXPNAME")) ? " ORDER BY " + super.parsedInputs.get("EXPNAME") : "";
+                    //ss += (parsedInputs.containsKey("EXPNAME")) ? " ORDER BY " + super.parsedInputs.get("EXPNAME") : "";
                 }
                 if (super.fields.contains("LIMIT")) {
                     ss += " LIMIT " + super.parsedInputs.get("LIMIT");
@@ -135,5 +131,17 @@ public class Estimate extends Query {
 
     public String getPopulation(){
         return parsedInputs.get("POPULATION");
+    }
+
+    public String getCols () {
+	    if (this.getMode().equals("BY")) {
+		String[] tmp = parsedInputs.get("EXPRESSION").split("(CORRELATION OF)|(WITH)");
+		return tmp[1] + "," + tmp[2];
+	    } else if(this.getMode().equals("FROM VARIABLES OF")) {
+		    String[] tmp = parsedInputs.get("EXPRESSION").split("CORRELATION WITH");
+		    return tmp[1];
+	    } else {
+	    	return "";
+	    }
     }
 }
