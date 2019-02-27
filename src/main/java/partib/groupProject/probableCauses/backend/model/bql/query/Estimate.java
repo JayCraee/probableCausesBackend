@@ -98,6 +98,7 @@ public class Estimate extends Query {
             }
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
+                ss += (parsedInputs.get("MODE").equals("FROM") && type==EstimateType.SIMILARITY) ? " _rowid_ AS rowid, " : "";
                 ss += " " + parsedInputs.get("EXPRESSION");
                 ss += (type == EstimateType.CORRELATION) ? " AS corr " : (parsedInputs.get("MODE").equals("FROM")) ? " AS value " : "";
                 ss += " " + parsedInputs.get("MODE");
