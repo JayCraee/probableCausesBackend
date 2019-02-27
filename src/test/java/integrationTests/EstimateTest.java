@@ -30,9 +30,9 @@ public class EstimateTest {
                 start +
                 "/MODE=BY" +
                 "-EXPRESSION=CORRELATION!OF!Id!WITH!Year" +
-                "-EXPNAME=Correlation" +
+                "-EXPNAME=corr" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("Correlation");
+        List<String> expectedColumnNames = Arrays.asList("corr", "name0", "name1");
         int expectedNumberOfRows = 1;
 
         IntegrationTestFramework.singleTest(uri, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -144,7 +144,7 @@ public class EstimateTest {
                 "-EXPNAME=corr" +
                 "-POPULATION=CRIMEDATA";
         List<String> expectedColumnNames = Arrays.asList("corr", "population_id", "name0", "name1");
-        int expectedNumberOfRows = 50;
+        int expectedNumberOfRows = 64;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
@@ -182,15 +182,13 @@ public class EstimateTest {
 
     // djh242: As of 25/02/19, this fails with an empty BQLException and I don't know why.
     // Possible that there's an SQLException that isn't being delivered properly.
-    @Ignore
     @Test
     public void testFROM_PAIRWISE() throws Exception {
         String input = start + //
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
-                "-EXPNAME=sim" +
                 "-POPULATION=CRIMEDATA";
-        List<String> expectedColumnNames = Arrays.asList("sim");
+        List<String> expectedColumnNames = Arrays.asList("value", "rowid0", "rowid1");
         int expectedNumberOfRows = 50;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
@@ -198,23 +196,21 @@ public class EstimateTest {
 
     // djh242: As of 25/02/19, this fails with an empty BQLException and I don't know why.
     // Possible that there's an SQLException that isn't being delivered properly.
-    @Ignore
+/*
     @Test
     public void testFROM_PAIRWISEOptionals() throws Exception {
         String input = start + //
                 "MODE=FROM_PAIRWISE" +
                 "-EXPRESSION=SIMILARITY!IN!THE!CONTEXT!OF!Year" +
-                "-EXPNAME=sim" +
                 "-POPULATION=CRIMEDATA" +
-                "-WHERE=rowid1>1000 AND rowid2>1000" +
-                "-ORDER_BY=sim" +
+                "-ORDER_BY=value" +
                 "-LIMIT=10";
-        List<String> expectedColumnNames = Arrays.asList("sim");
+        List<String> expectedColumnNames = Arrays.asList("value", "rowid0", "rowid1");
         int expectedNumberOfRows = 10;
 
         IntegrationTestFramework.singleTest(input, expectedColumnNames, expectedNumberOfRows, mockMvc);
     }
-
+/*
     @Test (expected = MalformedParametersException.class)
     public void testFROM_PAIRWISEInvalidOptionalsError() throws Exception {
         String input = start +
@@ -226,7 +222,7 @@ public class EstimateTest {
 
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }
-
+*/
     @Test (expected = MalformedParametersException.class)
     public void testInvalidModeError() throws Exception {
         String input = start +
@@ -251,15 +247,6 @@ public class EstimateTest {
         String input = start +
                 "MODE=FROM" +
                 "-EXPNAME=col" +
-                "-POPULATION=pop";
-        IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
-    }
-
-    @Test (expected = MalformedParametersException.class)
-    public void testMissingExpNameError() throws Exception {
-        String input = start +
-                "MODE=FROM" +
-                "-EXPRESSION=exp" +
                 "-POPULATION=pop";
         IntegrationTestFramework.singleTest(input, null, null, mockMvc, true);
     }

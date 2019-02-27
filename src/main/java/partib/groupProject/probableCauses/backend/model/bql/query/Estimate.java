@@ -93,14 +93,14 @@ public class Estimate extends Query {
             }
             case "FROM": {
                 //[DISTINCT|ALL]?
-		    if(type != EstimateType.SIMILARITY) throw new MalformedParametersException("Mode FROM not supported with Expression SIMILARITY!");
+		//    if(type == EstimateType.SIMILARITY) throw new MalformedParametersException("Mode FROM not supported with Expression SIMILARITY!");
 		    //NOTE: THis is _meant_ to then proceed into the default case.
             }
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
                 ss += (parsedInputs.get("MODE").equals("FROM") && type==EstimateType.SIMILARITY) ? " _rowid_ AS rowid, " : "";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += (type == EstimateType.CORRELATION) ? " AS corr " : (parsedInputs.get("MODE").equals("FROM")) ? " AS value " : (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
+                ss += (type == EstimateType.CORRELATION) ? " AS corr " : (type==EstimateType.SIMILARITY && parsedInputs.get("MODE").equals("FROM")) ? " AS value " : (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 for (String opt : innerFields) {

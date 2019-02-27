@@ -29,14 +29,14 @@ public class SelectTest {
 
 	private String start = "/bql/query/select/";
 
-	@Ignore // djh242 25/02/19 - can safely ignore this for now as it's not a case that should occur in practice
+/*	@Ignore // djh242 25/02/19 - can safely ignore this for now as it's not a case that should occur in practice
 	@Test (expected = MalformedParametersException.class)
 	public void testEmptyRejected() throws Exception{
 		String uri = start;
 
 		IntegrationTestFramework.singleTest(uri, null, null, mockMvc, true);
 	}
-
+*/
 	@Test (expected = MalformedParametersException.class)
 	public void testNoTable() throws Exception{
 		String uri = start +

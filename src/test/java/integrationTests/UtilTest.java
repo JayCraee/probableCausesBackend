@@ -32,7 +32,7 @@ public class UtilTest {
 
     @Test
     public void testGetColumns() throws Exception {
-        String uri = "/util/columnNames/CRIMEDATA";
+        String uri = "/util/columnNamesPop/CRIMEDATA";
         String result = mockMvc.perform(get(uri)).andReturn().getResponse().getContentAsString();
 
         assertEquals("[\"PrimaryType\", \"District\", \"LocationDescription\", \"Arrest\", \"Location\", \"Latitude\", \"CommunityArea\", \"CaseNumber\", \"Beat\", \"Date\", \"Ward\", \"FBICode\", \"YCoordinate\", \"UpdatedOn\", \"Longitude\", \"ID\", \"Block\", \"Description\", \"XCoordinate\", \"Domestic\", \"IUCR\", \"Year\"]",

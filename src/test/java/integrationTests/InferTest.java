@@ -28,7 +28,7 @@ public class InferTest {
 
 	private String start = "/bql/query/infer/";
 
-
+/*
 	@Ignore // djh242 25/02/19 - can safely ignore this for now as it's not a case that should occur in practice
 	@Test (expected = MalformedParametersException.class)
 	public void testEmptyRejected() throws Exception{
@@ -36,7 +36,7 @@ public class InferTest {
 
 		IntegrationTestFramework.singleTest(uri, null, 0, mockMvc);
 	}
-
+*/
 	@Test (expected = MalformedParametersException.class)
 	public void testNoCOLEXP() throws Exception{
 		String uri = start +
