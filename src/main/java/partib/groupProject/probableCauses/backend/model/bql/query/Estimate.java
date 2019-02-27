@@ -87,7 +87,7 @@ public class Estimate extends Query {
                 if (super.fields.contains("LIMIT")) {
                     ss += "LIMIT " + parsedInputs.get("LIMIT");
                 } else {
-                    ss += "LIMIT 1000000";
+                    ss += "LIMIT 50";
                 }
                 break;
             }
@@ -100,7 +100,7 @@ public class Estimate extends Query {
                 ss += "SELECT * FROM ( ESTIMATE";
                 ss += (parsedInputs.get("MODE").equals("FROM") && type==EstimateType.SIMILARITY) ? " _rowid_ AS rowid, " : "";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += (type == EstimateType.CORRELATION) ? " AS corr " : (parsedInputs.get("MODE").equals("FROM")) ? " AS value " : "";
+                ss += (type == EstimateType.CORRELATION) ? " AS corr " : (parsedInputs.get("MODE").equals("FROM")) ? " AS value " : (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 for (String opt : innerFields) {
@@ -116,8 +116,8 @@ public class Estimate extends Query {
                 }
                 if (super.fields.contains("LIMIT")) {
                     ss += " LIMIT " + super.parsedInputs.get("LIMIT");
-                } else {
-                    ss += " LIMIT 100000";
+                } else if(!parsedInputs.get("MODE").equals("FROM PAIRWISE VARIABLES OF")) {
+                    ss += " LIMIT 50";
                 }
             }
         }

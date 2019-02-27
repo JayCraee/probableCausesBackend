@@ -56,6 +56,7 @@ public class EstimateOutputCleaner {
 						return data;
 				}
 				break;
+			default: return data;
 
 			case SIMILARITY:
 
