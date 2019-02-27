@@ -51,7 +51,7 @@ public class EstimateOutputCleaner {
 							}
 						}
 						json += "]]";
-						break;
+						return json;
 					case "FROM PAIRWISE VARIABLES OF":
 						return data;
 				}
