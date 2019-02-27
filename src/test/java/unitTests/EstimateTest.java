@@ -46,19 +46,18 @@ public class EstimateTest {
     public void testBY() {
         String input =
                 "MODE=BY" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS COL BY pop) LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y BY POP) LIMIT 1000000";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=BY" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
+                "-EXPNAME=corr" +
                 "-POPULATION=pop" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp AS col BY pop) LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR BY POP) LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -66,8 +65,7 @@ public class EstimateTest {
     public void testBYWithInvalidOptionalsError1() {
         String input =
                 "MODE=BY" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-WHERE=cond";
         singleTest(input, null, true);
@@ -77,8 +75,7 @@ public class EstimateTest {
     public void testBYWithInvalidOptionalsError2() {
         String input =
                 "MODE=BY" +
-                "-EXPRESSION=exp1" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-GROUP_BY=exp2";
         singleTest(input, null, true);
@@ -88,8 +85,7 @@ public class EstimateTest {
     public void testBYWithInvalidOptionalsError3() {
         String input =
                 "MODE=BY" +
-                "-EXPRESSION=exp1" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-ORDER_BY=exp2";
         singleTest(input, null, true);
@@ -99,15 +95,14 @@ public class EstimateTest {
     public void testFROM() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
         String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop) ORDER BY col LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp1" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=exp2" +
@@ -122,15 +117,14 @@ public class EstimateTest {
     public void testFROM_VARIABLES_OF() {
         String input =
                 "MODE=FROM_VARIABLES_OF" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM VARIABLES OF pop) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM VARIABLES OF POP) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM_VARIABLES_OF" +
-                "-EXPRESSION=exp1" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=exp2" +
@@ -142,18 +136,17 @@ public class EstimateTest {
     }
 
     @Test
-    public void testFROM_PAIRWISE_VARIABLES_OF() {  // "[FOR <subcolumns>]" doesn't appear to be supported at this point in time
+    public void testFROM_PAIRWISE_VARIABLES_OF() {
         String input =
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM PAIRWISE VARIABLES OF pop) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM PAIRWISE VARIABLES OF POP) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=exp1" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=exp2" +
@@ -167,8 +160,7 @@ public class EstimateTest {
     public void testFROM_PAIRWISE_VARIABLES_OFWithInvalidOptionalsError() {
         String input =
                 "MODE=FROM_PAIRWISE_VARIABLES_OF" +
-                "-EXPRESSION=exp1" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-GROUP_BY=exp2";
         singleTest(input, null, true);
@@ -178,15 +170,14 @@ public class EstimateTest {
     public void testFROM_PAIRWISE() {
         String input =
                 "MODE=FROM_PAIRWISE" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM PAIRWISE pop) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM PAIRWISE POP) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM_PAIRWISE" +
-                "-EXPRESSION=exp1" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=exp2" +
@@ -200,8 +191,7 @@ public class EstimateTest {
     public void testFROM_PAIRWISEWithInvalidOptionalsError() {
         String input =
                 "MODE=FROM_PAIRWISE" +
-                "-EXPRESSION=exp1" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-GROUP_BY=exp2";
         singleTest(input, null, true);
@@ -211,8 +201,7 @@ public class EstimateTest {
     public void testInvalidModeError() {
         String input =
                 "MODE=fake_mode" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
         singleTest(input, null, true);
     }
@@ -220,8 +209,7 @@ public class EstimateTest {
     @Test (expected = MalformedParametersException.class)
     public void testMissingModeError() {
         String input =
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
         singleTest(input, null, true);
     }
@@ -230,16 +218,6 @@ public class EstimateTest {
     public void testMissingExpressionError() {
         String input =
                 "MODE=FROM" +
-                "-EXPNAME=col" +
-                "-POPULATION=pop";
-        singleTest(input, null, true);
-    }
-
-    @Test (expected = MalformedParametersException.class)
-    public void testMissingExpNameError() {
-        String input =
-                "MODE=FROM" +
-                "-EXPRESSION=exp" +
                 "-POPULATION=pop";
         singleTest(input, null, true);
     }
@@ -248,8 +226,7 @@ public class EstimateTest {
     public void testMissingPopulationError() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col";
+                "-EXPRESSION=CORRELATION OF x WITH y";
         singleTest(input, null, true);
     }
 
@@ -257,8 +234,7 @@ public class EstimateTest {
     public void testInvalidFieldNameError() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp1" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-fake_news=exp2";
         singleTest(input, null, true);
@@ -268,8 +244,7 @@ public class EstimateTest {
     public void testWithEqualityInCondition() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=exp" +
-                "-EXPNAME=col" +
+                "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-WHERE=x=y";
         String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop WHERE x=y) ORDER BY col LIMIT 50";
