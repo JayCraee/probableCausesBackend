@@ -79,7 +79,7 @@ public class Estimate extends Query {
                 ss += "SELECT * FROM ( ";
                 ss += "ESTIMATE";
                 ss += " " + parsedInputs.get("EXPRESSION");
-                ss += (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
+                ss += (type==EstimateType.SIMILARITY) ? " AS value " : (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
                 ss += " " + parsedInputs.get("POPULATION");
                 ss += " ) ";
@@ -98,7 +98,7 @@ public class Estimate extends Query {
             }
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";
-                ss += (parsedInputs.get("MODE").equals("FROM") && type==EstimateType.SIMILARITY) ? " _rowid_ AS rowid, " : "";
+                ss += (parsedInputs.get("MODE").equals("FROM") && type==EstimateType.SIMILARITY) ? " \"" + this.getCols() + "\" AS rowid0, _rowid_ AS rowid1, " : "";
                 ss += " " + parsedInputs.get("EXPRESSION");
                 ss += (type == EstimateType.CORRELATION) ? " AS corr " : (type==EstimateType.SIMILARITY && parsedInputs.get("MODE").equals("FROM")) ? " AS value " : (parsedInputs.containsKey("EXPNAME")) ? " AS " + parsedInputs.get("EXPNAME") : "";
                 ss += " " + parsedInputs.get("MODE");
@@ -135,12 +135,18 @@ public class Estimate extends Query {
     }
 
     public String getCols () {
-	    if (this.getMode().equals("BY")) {
+	    if (type==EstimateType.CORRELATION && this.getMode().equals("BY")) {
 		String[] tmp = parsedInputs.get("EXPRESSION").split("(CORRELATION OF)|(WITH)");
 		return tmp[1] + "," + tmp[2];
-	    } else if(this.getMode().equals("FROM VARIABLES OF")) {
-		    String[] tmp = parsedInputs.get("EXPRESSION").split("CORRELATION WITH");
-		    return tmp[1];
+	    } else if (type==EstimateType.SIMILARITY && this.getMode().equals("BY")) {
+                String[] tmp = parsedInputs.get("EXPRESSION").split("(OF )|( TO )");
+                return tmp[1] + ((this.getMode().equals("BY")) ? "," + tmp[2].split(" ")[0] : "");
+            } else if(this.getMode().equals("FROM VARIABLES OF")) {
+		String[] tmp = parsedInputs.get("EXPRESSION").split("CORRELATION WITH");
+		return tmp[1];
+	    } else if(type==EstimateType.SIMILARITY && !this.getMode().equals("FROM PAIRWISE")){
+	    	String[] tmp = parsedInputs.get("EXPRESSION").split("(OF )|( TO )");
+	    	return tmp[1].split(" ")[0] + ((this.getMode().equals("BY")) ? "," + tmp[2].split(" ")[0] : "");
 	    } else {
 	    	return "";
 	    }

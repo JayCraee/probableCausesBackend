@@ -59,7 +59,15 @@ public class EstimateOutputCleaner {
 			default: return data;
 
 			case SIMILARITY:
+				switch(query.getMode()){
 
+					case "BY":
+						String[] rows = query.getCols().split(",");
+						String value = data.substring(3, data.length() - 3).split(":")[1];
+						return "[[{\"value\":" + value + ", \"rowid0\":\"" + rows[0] + "\", \"rowid1\":\"" + rows[1] + "\"}]]";
+					case "FROM":
+
+				}
 				break;
 		}
 
