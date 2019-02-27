@@ -45,7 +45,7 @@ public class Estimate extends Query {
         parsedInputs.put("EXPRESSION", super.cleanExpression(parsedInputs.get("EXPRESSION")));
         if(parsedInputs.get("EXPRESSION").contains("CORRELATION")) type = EstimateType.CORRELATION;
         else if(parsedInputs.get("EXPRESSION").contains("SIMILARITY")) type = EstimateType.SIMILARITY;
-        else throw new MalformedParametersException("Cannot estimate " + parsedInputs.get("EXPRESSION"));
+        else type=EstimateType.OTHER;
 
         //Check that we don't have superfluous fields given the MODE option.
         ArrayList<String> disallowedFields;
