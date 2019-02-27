@@ -48,7 +48,7 @@ public class EstimateTest {
                 "MODE=BY" +
                 "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y BY POP) LIMIT 1000000";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y BY POP) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
@@ -95,21 +95,21 @@ public class EstimateTest {
     public void testFROM() {
         String input =
                 "MODE=FROM" +
-                "-EXPRESSION=CORRELATION OF x WITH y" +
+                "-EXPRESSION=CORRELATION!OF!x!WITH!y" +
                 "-POPULATION=pop";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM POP) LIMIT 50";
         singleTest(input, expectedOutput);
 
         input =
                 "MODE=FROM" +
-                "-EXPRESSION=CORRELATION OF x WITH y" +
+                "-EXPRESSION=CORRELATION!OF!x!WITH!y" +
                 "-EXPNAME=col" +
                 "-POPULATION=pop" +
                 "-WHERE=exp2" +
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM POP WHERE EXP2 GROUP BY EXP3) ORDER BY EXP4 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -131,7 +131,7 @@ public class EstimateTest {
                 "-GROUP_BY=exp3" +
                 "-ORDER_BY=exp4" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM VARIABLES OF pop WHERE exp2 GROUP BY exp3) ORDER BY exp4 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM VARIABLES OF POP WHERE EXP2 GROUP BY EXP3) ORDER BY EXP4 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -152,7 +152,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM PAIRWISE VARIABLES OF pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM PAIRWISE VARIABLES OF POP WHERE EXP2) ORDER BY EXP3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -183,7 +183,7 @@ public class EstimateTest {
                 "-WHERE=exp2" +
                 "-ORDER_BY=exp3" +
                 "-LIMIT=1000";
-        expectedOutput = "SELECT * FROM (ESTIMATE exp1 AS col FROM PAIRWISE pop WHERE exp2) ORDER BY exp3 LIMIT 1000";
+        expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM PAIRWISE POP WHERE EXP2) ORDER BY EXP3 LIMIT 1000";
         singleTest(input, expectedOutput);
     }
 
@@ -247,7 +247,7 @@ public class EstimateTest {
                 "-EXPRESSION=CORRELATION OF x WITH y" +
                 "-POPULATION=pop" +
                 "-WHERE=x=y";
-        String expectedOutput = "SELECT * FROM (ESTIMATE exp AS col FROM pop WHERE x=y) ORDER BY col LIMIT 50";
+        String expectedOutput = "SELECT * FROM (ESTIMATE CORRELATION OF X WITH Y AS CORR FROM POP WHERE X=Y) LIMIT 50";
         singleTest(input, expectedOutput);
     }
 }
