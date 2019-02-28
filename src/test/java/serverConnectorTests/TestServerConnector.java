@@ -1,4 +1,4 @@
-package partib.groupProject.probableCauses.backend.unitTests;
+package serverConnectorTests;
 
 import partib.groupProject.probableCauses.backend.controller.ServerConnector;
 import partib.groupProject.probableCauses.backend.controller.InvalidCallException;
