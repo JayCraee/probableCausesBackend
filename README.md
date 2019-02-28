@@ -1,14 +1,15 @@
 # probableCausesBackend
-Backend of Part IB Group Project Probable Causes
+The client side processing for the 'Probable Causes' group project, which adapts the probabilistic database system BayesDb developed at the MIT to provide a simpler access to data science capabilities to a wider audience.
 
-Last modified: 7th Feb 2019
+#TODO
+Last modified: 7th Feb 2019 
 
-Instead of implementing backend in an external server, I chose to use localhost at the moment for easier testing and debugging.
-We can just use Cambridge domain provided for free if we want to put this online.
-
-None of non-sample APIs are working at the moment.
+This code is run on the same machine as the web-app interface, i.e. currently on `localhost`.
 
 ## API
+
+The client side front and back ends interact through a textual API representing the query to be processed by BayesDB which gets processed by the code in this repository. 
+This process includes generating a query in BayesDB's query language BQL, which is then sent via an HTTP request to a remote server running an instance of BayesDB
 
 Return of any BQL commands will be a json object,
 where the object is a set of tables

@@ -14,7 +14,7 @@ import partib.groupProject.probableCauses.backend.model.bql.query.Simulate;
 @RestController
 @RequestMapping("/bql/query")
 public class QueryController {
-    public static final String db = "crime.bdb";
+    public static final String db = "african_traffic_data.bdb";
     private final Logger log = LoggerFactory.getLogger(QueryController.class);
 
     @GetMapping("/estimate/{unparsed}")
