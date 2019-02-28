@@ -1,4 +1,4 @@
-package partib.groupProject.probableCauses.backend.unitTests;
+package serverConnectorTests;
 
 import java.lang.reflect.Method;
 
