@@ -51,7 +51,7 @@ public class Find_Outliers extends Query {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
-        // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
+        // Check for invalid fields in the call from the front-end.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");

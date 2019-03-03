@@ -29,8 +29,7 @@ public class Estimate extends Query {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
-        // TODO what does this bit check for exactly? Please add a comment
-        // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
+        // Check for invalid fields in the call from the front-end.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
@@ -47,7 +46,7 @@ public class Estimate extends Query {
         else if(parsedInputs.get("EXPRESSION").contains("SIMILARITY")) type = EstimateType.SIMILARITY;
         else type=EstimateType.OTHER;
 
-        //Check that we don't have superfluous fields given the MODE option.
+        // Check that we don't have superfluous fields given the MODE option.
         ArrayList<String> disallowedFields;
         switch (super.parsedInputs.get("MODE")) {
             case "BY":
@@ -92,9 +91,9 @@ public class Estimate extends Query {
                 break;
             }
             case "FROM": {
-                //[DISTINCT|ALL]?
-		//    if(type == EstimateType.SIMILARITY) throw new MalformedParametersException("Mode FROM not supported with Expression SIMILARITY!");
-		    //NOTE: THis is _meant_ to then proceed into the default case.
+                //This is here to account for the possibility of including: [DISTINCT|ALL]
+		        //if(type == EstimateType.SIMILARITY) throw new MalformedParametersException("Mode FROM not supported with Expression SIMILARITY!");
+		        //NOTE: THis is _meant_ to then proceed into the default case.
             }
             default: {
                 ss += "SELECT * FROM ( ESTIMATE";

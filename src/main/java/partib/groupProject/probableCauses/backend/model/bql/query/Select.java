@@ -16,12 +16,13 @@ public class Select extends Query {
 	public Select(String unparsed) throws MalformedParametersException{
 		super(unparsed);
 
-		//sanity check on inputs
+		// Check for missing compulsory fields
 		for (String k : compulsoryFields) {
 			if (!super.fields.contains(k)) {
 				throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
 			}
 		}
+		// Check for invalid fields in the call from the front-end.
 		for (String k : super.fields) {
 			if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
 				throw new MalformedParametersException("Error: Query field <"+k+"> not present");

@@ -20,7 +20,7 @@ public class Simulate extends Query {
                 throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
             }
         }
-        // dks28: This should check for invalid fields -- it works for Infer and Select. Not sure why it doesn't in this case.
+        // Check for invalid fields in the call from the front-end.
         for (String k : super.fields) {
             if (!compulsoryFields.contains(k) && !optionalFields.contains(k)) {
                 throw new MalformedParametersException("Error: Query field <"+k+"> not present");
@@ -33,9 +33,9 @@ public class Simulate extends Query {
         List<String> ret = new ArrayList<>();
         String ss = "SELECT ";
         String combinedColNames = String.join("||\"--\"||", parsedInputs.get("COLNAMES").split(","));
-        String newFieldName = String.join("_", parsedInputs.get("COLNAMES").split(",")); //TODO read: dks28 -- Changed Delimiter to underscore because dash is a syntax error.
+        String newFieldName = String.join("_", parsedInputs.get("COLNAMES").split(","));
         ss += combinedColNames;
-        ss += " AS " + newFieldName + ", COUNT(" + newFieldName + ") AS frequency FROM (";              //TODO read: dks28 -- Added Comma. How did this get through unit tests?
+        ss += " AS " + newFieldName + ", COUNT(" + newFieldName + ") AS frequency FROM (";
         ss += " SIMULATE " + parsedInputs.get("COLNAMES");
         ss += " FROM " + parsedInputs.get("POPULATION");
         if (super.fields.contains("GIVEN")) {

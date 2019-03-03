@@ -58,13 +58,13 @@ public class Infer extends Query {
 	
 	public Infer(String unparsed) {
 		super(unparsed);
-		// Check for missing compulsory fields TODO Consider putting this in a function of Query
+		// Check for missing compulsory fields
 		for (String k : compulsoryFields) {
 			if (!super.fields.contains(k)) {
 				throw new MalformedParametersException("Error: Missing compulsory field <"+k+">");
 			}
 		}
-		// TODO what does this bit check for exactly? Please add a comment
+		// Check for invalid fields in the call from the front-end.
 		for (String k : super.fields) {
 			if (!compulsoryFields.contains(k) && !optionalFields.contains(k) && !earlyOptionalFields.contains(k)) {
 				throw new MalformedParametersException("Error: Query field <"+k+"> not present");
