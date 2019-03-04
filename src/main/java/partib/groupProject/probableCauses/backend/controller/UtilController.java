@@ -67,24 +67,19 @@ public class UtilController {
     @GetMapping("/columnNamesPop/{populationName}")
     public static String getColumnNamesPopulation(@PathVariable String populationName) throws InvalidCallException {
         // Grab the correlation between any two columns
-        String row = singleQueryCaller(QueryController.db, "SELECT * FROM (ESTIMATE CORRELATION FROM PAIRWISE VARIABLES OF " + populationName + ")");
-        ArrayList<String> tmp = new ArrayList<>(Arrays.asList(row.split("\"name0\": \"")));
-        tmp.remove(0);
-        ArrayList<String> columnList = new ArrayList();
-        for(String s : tmp){
-            if(!columnList.contains(s.split("\"")[0])) columnList.add(s.split("\"")[0]);
-        }
-
+        String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS");
+        ArrayList<String> columnList = new ArrayList<>(Arrays.asList(row.split(",")));
+        System.out.println(row);
         // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
-            json += "\""+columnList.get(i)+"\"";
+            json += ""+columnList.get(i)+"";
             if (i+1 < columnList.size()) {
-                json += ", ";
+                json += ",";
             }
         }
         json += "]";
-
+        System.out.println(json);
         return json;
     }
 

@@ -17,13 +17,8 @@ public class EstimateOutputCleaner {
 
 		String columns;
 		// Grab the correlation between any two columns
-		String row = singleQueryCaller(QueryController.db, "SELECT * FROM (ESTIMATE CORRELATION FROM PAIRWISE VARIABLES OF " + query.getPopulation() + ")");
-		ArrayList<String> tmp = new ArrayList<>(Arrays.asList(row.split("\"name0\": \"")));
-		tmp.remove(0);
-		ArrayList<String> columnList = new ArrayList();
-		for(String s : tmp){
-			if(!columnList.contains(s.split("\"")[0])) columnList.add(s.split("\"")[0]);
-		}
+		String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS");
+		ArrayList<String> columnList = new ArrayList<>(Arrays.asList(row.split(",")));
 
 		switch(query.type){
 
