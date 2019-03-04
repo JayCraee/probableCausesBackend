@@ -86,13 +86,13 @@ public class UtilController {
     @GetMapping("/columnNamesPop/{populationName}")
     public static String getColumnNamesPopulation(@PathVariable String populationName) throws InvalidCallException {
         // Grab the correlation between any two columns
-        String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS");
+        String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS").replace("\"", "");
         ArrayList<String> columnList = new ArrayList<>(Arrays.asList(row.split(",")));
         System.out.println(row);
         // Construct and return json output
         String json = "[";
         for(int i = 0; i < columnList.size(); i++) {
-            json += ""+columnList.get(i)+"";
+            json += "\""+columnList.get(i)+"\"";
             if (i+1 < columnList.size()) {
                 json += ",";
             }
