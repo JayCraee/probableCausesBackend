@@ -8,11 +8,31 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.json.*;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static partib.groupProject.probableCauses.backend.controller.ServerConnector.singleQueryCaller;
+
+/***
+ * This is controller class for non-BQL query APIs.
+ * APIs available are:
+ *
+ * 1) /util/tableNames
+ * It simply returns all available table names in the database.
+ * Returns in String after processing JSON from the DB server.
+ *
+ * 2) /util/columnNames/{tableName}
+ * Gets names of all columns in given table, returns in format ["column1", "column2", ...]
+ *
+ * 3) /util/columnNamesPop/{populationName}
+ * Gets names of all population column names, returns in format ["column1", "column2", ...]
+ *
+ * 4) /util/nominalColumnNames/{tableName}
+ * Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
+ *
+ * 5) /util/anyQuery/{query}
+ * For testing purposes only
+ */
 
 @RestController
 @RequestMapping("/util")
@@ -38,7 +58,6 @@ public class UtilController {
         return "["+tableNames.stream().map(Object::toString).collect(Collectors.joining(", "))+"]";
     }
 
-    // Gets names of all columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/columnNames/{tableName}")
     public static String getColumnNames(@PathVariable String tableName) throws InvalidCallException {
         // Grab one row
@@ -83,7 +102,6 @@ public class UtilController {
         return json;
     }
 
-    // Gets names of all nominal columns in given table, returns in format ["column1", "column2", ...]
     @GetMapping("/nominalColumnNames/{tableName}")
     public static String getNominalColumnNames(@PathVariable String tableName) throws InvalidCallException {
         // Grab schema
@@ -117,7 +135,6 @@ public class UtilController {
         return json;
     }
 
-    // For testing purposes only
     @GetMapping("/anyQuery/{query}")
     public static String runAnyQuery(@PathVariable String query) throws InvalidCallException {
         return singleQueryCaller(QueryController.db, query);
