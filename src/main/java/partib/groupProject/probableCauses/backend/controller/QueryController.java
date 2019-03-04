@@ -8,6 +8,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import partib.groupProject.probableCauses.backend.model.bql.query.*;
 
+/***
+ * This controller class hanldes all APIs related to BQL query.
+ *
+ * 1) /bql/query/estimate/{unparsed}
+ * Gets any form of ESTIMATE query, checks the format and returns results in string
+ * Throws an exception on invalid calls
+ *
+ * 2) /bql/query/infer/{unparsed}
+ * Gets any form of INFER query, checks the format and returns results in string
+ * Throws an exception on invalid calls
+ *
+ * 2) /bql/query/simulate/{unparsed}
+ * Gets any form of SIMULATE query, checks the format and returns results in string
+ * Throws an exception on invalid calls
+ *
+ * 2) /bql/query/select/{unparsed}
+ * Gets any form of SELECT query, checks the format and returns results in string
+ * Throws an exception on invalid calls
+ *
+ * 2) /bql/query/find_outliers/{unparsed}
+ * Gets any form of FIND_OUTLIERS query, checks the format and returns results in string
+ * Throws an exception on invalid calls
+ */
+
 @RestController
 @RequestMapping("/bql/query")
 public class QueryController {
