@@ -4,6 +4,49 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
 
+/**
+ * The ESTIMATE query can be called by the client via the appropriate method.
+ * ESTIMATE is for generating statistics of the data according by the user-input expressions.
+ *
+ * The format, according to the documentation at: http://probcomp.csail.mit.edu/dev/bayesdb/doc/bql.html,
+ * is as follows:
+ *
+ * 1.
+ * ESTIMATE <expression> BY <population>
+ *
+ * 2.
+ * ESTIMATE [DISTINCT|ALL] <expression> FROM <population> [MODELED BY <g>] [USING [MODEL <num>] [MODELS <num0>-<num1>]]
+ *      [WHERE <condition>] [GROUP BY <grouping>] [ORDER BY <ordering>] [LIMIT <limit>]
+ * 3.
+ * ESTIMATE <expression> FROM VARIABLES OF <population> [MODELED BY <g>] [USING [MODEL <num>] [MODELS <num0>-<num1>]]
+ *      [WHERE <condition>] [GROUP BY <grouping>] [ORDER BY <ordering>] [LIMIT <limit>]
+ *
+ * 4.
+ * ESTIMATE <expression> FROM PAIRWISE VARIABLES OF <population> [FOR <subcolumns>] [MODELED BY <g>]
+ *      [USING [MODEL <num>] [MODELS <num0>-<num1>]] [WHERE <condition>] [ORDER BY <ordering>] [LIMIT <limit>]
+ *
+ * 5.
+ * ESTIMATE <expression> FROM PAIRWISE <population> [MODELED BY <g>] [USING [MODEL <num>] [MODELS <num0>-<num1>]
+ *      [WHERE <condition>] [ORDER BY <ordering>] [LIMIT <limit>]
+ *
+ * However, from the front-end, we expect a call of the form: '/estimate/{unparsed}', where unparsed is of format:
+ * ...-<field1>=<field1_value>-<field2>=<field2_value>-...
+ * The compulsory fields required are: 'MODE', 'EXPRESSION', 'POPULATION',
+ * and the optional fields are: 'EXPNAME', 'WHERE', 'GROUP BY', 'LIMIT'.
+ *
+ * An example call might take the form:
+ * bql/query/estimate/MODE=BY-EXPRESSION=CORRELATION!OF!x!WITH!y-POPULATION=pop
+ *
+ * Note that the ordering of (field, value) pairs is not relevant, and may be specified in any desired order.
+ *
+ * In the absence of certain optional fields being specified, a reasonable default will be assumed:
+ * ORDER BY defaults=> <EXPNAME>
+ * LIMIT defaults=> 50.
+ *
+ */
+
+
+
 public class Estimate extends Query {
 
     public EstimateType type;

@@ -4,6 +4,24 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 import java.util.Arrays;
 
+
+/**
+ * This is the Query parent class, from which all Query methods called by the client subclass.
+ *
+ * We expect a call of the form: '/bql/query/<queryname>/{unparsed}', where unparsed is of format:
+ *  * ...-<field1>=<field1_value>-<field2>=<field2_value>-...
+ * <queryname> should take one of the implemented queries, such as 'estimate', or 'infer'.
+ *
+ * Note that the ordering of (field, value) pairs is not relevant, and may be specified in any desired order.
+ *
+ * Expressions are expected to have their spaces replaced with '!' exclamation marks, and are subsequently cleaned
+ * by the method cleanExpression below.
+ *
+ * Additionally, spaces in query names and fields should be replaced with '_' underscores, which are subsequently
+ * cleaned by the constructor below.
+ *
+ */
+
 public class Query {
     protected String unparsed;
     protected final Map<String, String> parsedInputs;
