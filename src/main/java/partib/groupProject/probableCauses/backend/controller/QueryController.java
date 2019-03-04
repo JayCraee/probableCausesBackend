@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import partib.groupProject.probableCauses.backend.model.bql.query.Estimate;
-import partib.groupProject.probableCauses.backend.model.bql.query.Infer;
-import partib.groupProject.probableCauses.backend.model.bql.query.Select;
-import partib.groupProject.probableCauses.backend.model.bql.query.Simulate;
+import partib.groupProject.probableCauses.backend.model.bql.query.*;
 
 @RestController
 @RequestMapping("/bql/query")
@@ -43,6 +40,13 @@ public class QueryController {
     String getSelect(@PathVariable String unparsed) throws InvalidCallException {
         System.out.println(unparsed);
         Select query = new Select(unparsed);
+        return ServerConnector.queryCaller(db, query.getBQL());
+    }
+
+    @GetMapping("/find_outliers/{unparsed}")
+    String getFindOutliers(@PathVariable String unparsed) throws InvalidCallException {
+        System.out.println(unparsed);
+        Find_Outliers query = new Find_Outliers(unparsed);
         return ServerConnector.queryCaller(db, query.getBQL());
     }
 }
