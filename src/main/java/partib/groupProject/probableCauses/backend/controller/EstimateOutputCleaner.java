@@ -17,18 +17,20 @@ public class EstimateOutputCleaner {
 
 		String columns;
 		// Grab the correlation between any two columns
-		String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS");
+		String row = singleQueryCaller(QueryController.db, "xxxGET POPULATION COLUMNS").replace("\"", "");
+		System.out.println(row);
 		ArrayList<String> columnList = new ArrayList<>(Arrays.asList(row.split(",")));
 
 		switch(query.type){
 
 			case CORRELATION:
-				switch (query.getMode()) {
+				System.out.println("\n\n\n " + data + "\n\n\n\n");
 
+				switch (query.getMode()) {
 					case "BY":
 						String[] cols = query.getCols().split(",");
 						String corr = data.substring(3, data.length() - 3).split(":")[1];
-						return "[[{\"corr\":" + corr + ", \"name0\":\"" + cols[0] + "\", \"name1\":\"" + cols[1] + "\"}]]";
+						return "[[{\"corr\":" + corr + ", \"name0\":\"" + cols[0].trim() + "\", \"name1\":\"" + cols[1] + "\"}]]";
 					case "FROM VARIABLES OF":
 						JsonReader jsonReader = Json.createReader(new StringReader(data));
 						JsonArray jsonArray = jsonReader.readArray();
@@ -40,12 +42,13 @@ public class EstimateOutputCleaner {
 						// Construct and return json output
 						String json = "[[";
 						for(int i = 0; i < columnList.size(); i++) {
-							json += "{\"corr\":"+correlations.get(i)+", \"name0\":\"" + query.getCols().toLowerCase() + "\", \"name1\":\"" + columnList.get(i) + "\"}";
+							json += "{\"corr\":"+correlations.get(i)+", \"name0\":\"" + query.getCols().toLowerCase().trim() + "\", \"name1\":\"" + columnList.get(i) + "\"}";
 							if (i+1 < columnList.size()) {
 								json += ", ";
 							}
 						}
 						json += "]]";
+						System.out.println(json);
 						return json;
 					case "FROM PAIRWISE VARIABLES OF":
 						return data;
@@ -54,6 +57,7 @@ public class EstimateOutputCleaner {
 			default: return data;
 
 			case SIMILARITY:
+				System.out.println(data);
 				switch(query.getMode()){
 
 					case "BY":
